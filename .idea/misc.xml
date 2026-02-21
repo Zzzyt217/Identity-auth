@@ -4,12 +4,19 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/pom.xml" />
-        <option value="$PROJECT_DIR$/auth-service02/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/analytics-service/pom.xml" />
+        <option value="$PROJECT_DIR$/company-service/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/gateway-service/pom.xml" />
+        <option value="$PROJECT_DIR$/jobseeker-service/pom.xml" />
         <option value="$PROJECT_DIR$/jobseekers-service/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/recruitment-service/pom.xml" />
+        <option value="$PROJECT_DIR$/resume-service/pom.xml" />
       </set>
     </option>
   </component>

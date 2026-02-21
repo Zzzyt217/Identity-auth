@@ -1,241 +1,565 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.themleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>注册</title>
+    <title>DID注册 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #2a3f8e;
+            --secondary-color: #1a2a5e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            line-height: 1.6;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+        /* 区块链背景网格 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 400px;
+            height: 100%;
+            background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
         }
-        
+
+        /* 头部 - 与首页一致 */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
         .logo {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
         }
-        
+
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #333;
-            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: white;
-            margin-right: 10px;
+            margin-right: 12px;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+            transition: var(--transition);
         }
-        
-        .logo-text {
-            font-size: 24px;
-            font-weight: bold;
+
+        .logo-icon:hover {
+            transform: rotate(10deg);
         }
-        
-        h1 {
+
+        .logo-icon i {
             font-size: 28px;
-            margin-bottom: 10px;
         }
-        
-        p {
-            color: #666;
-            margin-bottom: 20px;
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        .form-group {
-            margin-bottom: 15px;
+
+        .logo-sub {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-left: 5px;
+            font-weight: 400;
         }
-        
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
+
+        .container {
+            flex: 1;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
         }
-        
-        .verification-group {
+
+        /* 注册卡片 - 与首页欢迎卡片风格一致 */
+        .register-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .register-card::before {
+            content: "⛓️";
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 120px;
+            opacity: 0.05;
+            transform: rotate(15deg);
+        }
+
+        .register-card::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--blockchain-color));
+        }
+
+        .card-header {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
         }
-        
-        .verification-group input {
-            flex: 1;
+
+        .card-header h1 i {
+            color: var(--accent-color);
+            font-size: 32px;
         }
-        
-        .verification-group button {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 0 15px;
+
+        .card-header p {
+            color: var(--text-light);
             font-size: 14px;
-            cursor: pointer;
-            white-space: nowrap;
         }
-        
-        .btn-register {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 0;
-            font-size: 16px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .btn-register:hover {
-            background-color: #0c7cd5;
-        }
-        
-        .password-input {
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
             position: relative;
+            z-index: 1;
         }
-        
-        .password-icon {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-label i {
+            color: var(--accent-color);
+            margin-right: 6px;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(42, 63, 142, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+            color: var(--text-color);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(0, 201, 183, 0.1);
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%232a3f8e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 16px;
+        }
+
+        .form-text {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+            margin-left: 4px;
+        }
+
+        .form-text i {
+            color: var(--accent-color);
+            margin-right: 4px;
+            font-size: 12px;
+        }
+
+        /* 按钮组 */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 92, 231, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            border: 2px solid transparent;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 区块链提示 */
+        .chain-hint {
+            margin-top: 25px;
+            padding: 12px 16px;
+            background: rgba(0, 201, 183, 0.08);
+            border-radius: 30px;
+            font-size: 13px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chain-hint i {
+            color: var(--accent-color);
+            font-size: 16px;
+        }
+
+        .chain-hint strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* 页脚 */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 区块链浮动窗口 */
+        .blockchain-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        .blockchain-link i {
+            color: var(--accent-color);
+        }
+
+        /* 动画 */
+        .animate {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 必填星号 */
+        .required::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 4px;
         }
     </style>
-    <!-- 引入axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <div class="logo-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 7h-9"></path>
-                    <path d="M14 17H5"></path>
-                    <circle cx="17" cy="17" r="3"></circle>
-                    <circle cx="7" cy="7" r="3"></circle>
-                </svg>
-            </div>
-            <div class="logo-text">SupRecruitment</div>
+<!-- 头部 - 与首页完全一致 -->
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon">
+            <i class="fas fa-link"></i>
         </div>
-        
-        <h1>你好，欢迎！</h1>
-        <p>欢迎注册我们的平台</p>
-        
+        <div class="logo-text">BlockDIA</div>
+        <div class="logo-sub">· 区块链智能身份认证</div>
+    </div>
+    <div class="user-menu"></div>
+</div>
+
+<!-- 主要内容容器 -->
+<div class="container">
+    <div class="register-card animate">
+        <div class="card-header">
+            <h1>
+                <i class="fas fa-id-card"></i>
+                DID身份注册
+            </h1>
+            <p>填写员工信息，系统将自动生成去中心化数字身份</p>
+        </div>
+
+        <!-- 注册表单 -->
         <form id="registerForm">
+            <!-- 工号 - 必填 -->
             <div class="form-group">
-                <input type="text" id="username" name="username" placeholder="用户名" required>
+                <label class="form-label">
+                    <i class="fas fa-hashtag"></i>
+                    <span class="required">工号</span>
+                </label>
+                <input type="text" class="form-control" id="employeeId"
+                       placeholder="请输入工号，如：1001" required>
             </div>
-            
+
+            <!-- 姓名 - 必填 -->
             <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="请输入您的邮箱" required>
+                <label class="form-label">
+                    <i class="fas fa-user"></i>
+                    <span class="required">姓名</span>
+                </label>
+                <input type="text" class="form-control" id="name"
+                       placeholder="请输入姓名" required>
             </div>
-            
-            <div class="form-group verification-group">
-                <input type="text" id="verificationCode" name="verificationCode" placeholder="请输入验证码" required>
-                <button type="button" id="getCodeBtn" onclick="getCode()">获取验证码</button>
-            </div>
-            
-            <div class="form-group password-input">
-                <input type="password" id="password" name="password" placeholder="请输入密码" required>
-            </div>
-            
+
+            <!-- 部门 - 必填 -->
             <div class="form-group">
-                <label>身份：</label>
-                <input type="radio" id="role-jobseeker" name="role" value="求职者" required> <label for="role-jobseeker">求职者</label>
-                <input type="radio" id="role-company" name="role" value="企业" required> <label for="role-company">企业</label>
+                <label class="form-label">
+                    <i class="fas fa-building"></i>
+                    <span class="required">部门</span>
+                </label>
+                <select class="form-control" id="department" required>
+                    <option value="" disabled selected>请选择所属部门</option>
+                    <option value="技术部">技术部</option>
+                    <option value="市场部">市场部</option>
+                    <option value="人事部">人事部</option>
+                    <option value="财务部">财务部</option>
+                    <option value="运营部">运营部</option>
+                    <option value="产品部">产品部</option>
+                    <option value="行政部">行政部</option>
+                </select>
             </div>
-            
-            <button type="submit" class="btn-register">注册</button>
+
+            <!-- 职位 - 选填 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-briefcase"></i>
+                    职位
+                    <span style="color: var(--text-light); font-weight: normal; margin-left: 4px;">(选填)</span>
+                </label>
+                <input type="text" class="form-control" id="position"
+                       placeholder="请输入职位，如：工程师">
+            </div>
+
+            <!-- 权限角色 - 默认员工 -->
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fas fa-user-shield"></i>
+                    <span class="required">权限角色</span>
+                </label>
+                <select class="form-control" id="role" required>
+                    <option value="员工" selected>员工</option>
+                    <option value="超级管理员">超级管理员</option>
+                </select>
+            </div>
+
+            <!-- 提示信息 -->
+            <div class="form-text">
+                <i class="fas fa-info-circle"></i>
+                注册成功后系统将自动生成DID和密钥对
+            </div>
+
+            <!-- 按钮组 -->
+            <div class="button-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check-circle"></i>
+                    提交注册
+                </button>
+                <a href="/" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i>
+                    返回首页
+                </a>
+            </div>
+
+            <!-- 区块链存证提示 -->
+            <div class="chain-hint">
+                <i class="fas fa-link"></i>
+                <span><strong>区块链存证</strong> · 注册信息将上链记录，确保身份数据不可篡改</span>
+            </div>
         </form>
     </div>
+</div>
 
-    <script>
-        // 获取验证码
-        function getCode() {
-            const email = document.getElementById('email').value;
-            if (!email) {
-                alert('请输入邮箱');
-                return;
-            }
-            
-            const codeBtn = document.getElementById('getCodeBtn');
-            codeBtn.disabled = true;
-            
-            const params = new URLSearchParams();
-            params.append('email', email);
-            
-            axios.post('/auth/code', params)
-                .then(response => {
-                    const data = response.data;
-                    if (data.success) {
-                        alert(data.message);
-                        let countdown = 60;
-                        const timer = setInterval(() => {
-                            countdown--;
-                            codeBtn.textContent = `${countdown}s`;
-                            if (countdown <= 0) {
-                                clearInterval(timer);
-                                codeBtn.disabled = false;
-                                codeBtn.textContent = '获取验证码';
-                            }
-                        }, 1000);
-                    } else {
-                        alert(data.message);
-                        codeBtn.disabled = false;
-                    }
-                })
-                .catch(() => {
-                    alert('发送失败，请稍后再试');
-                    codeBtn.disabled = false;
-                });
+<!-- 页脚 -->
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    // 表单提交处理
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // 获取表单数据
+        const formData = {
+            employeeId: document.getElementById('employeeId').value.trim(),
+            name: document.getElementById('name').value.trim(),
+            department: document.getElementById('department').value,
+            position: document.getElementById('position').value.trim() || null,
+            role: document.getElementById('role').value
+        };
+
+        // 简单表单验证
+        if (!formData.employeeId) {
+            alert('请输入工号');
+            return;
+        }
+        if (!formData.name) {
+            alert('请输入姓名');
+            return;
+        }
+        if (!formData.department) {
+            alert('请选择部门');
+            return;
+        }
+        if (!formData.role) {
+            alert('请选择权限角色');
+            return;
         }
 
-        // 表单提交
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const email = document.getElementById('email').value;
-            const verificationCode = document.getElementById('verificationCode').value;
-            const password = document.getElementById('password').value;
-            const role = document.querySelector('input[name="role"]:checked').value;
-            
-            const params = new URLSearchParams();
-            params.append('username', username);
-            params.append('email', email);
-            params.append('verificationCode', verificationCode);
-            params.append('password', password);
-            params.append('role', role);
-            
-            axios.post('/auth/register', params)
-                .then(response => {
-                    const data = response.data;
-                    alert(data.message);
-                    if (data.success) {
-                        window.location.href = '/auth/login';
-                    }
-                });
-        });
-    </script>
+        // 显示加载状态
+        const submitBtn = document.querySelector('.btn-primary');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 注册中...';
+        submitBtn.disabled = true;
+
+        // 调用后端注册接口（方案A：生成 DID 并存库）
+        axios.post('/api/register', formData)
+            .then(function (res) {
+                if (res.data.success) {
+                    alert('注册成功！DID 已生成');
+                    window.location.href = '/identity/credential/' + res.data.id;
+                } else {
+                    alert(res.data.message || '注册失败');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            })
+            .catch(function (err) {
+                alert(err.response && err.response.data && err.response.data.message ? err.response.data.message : '网络或服务异常，请稍后重试');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+    });
+
+    // 卡片悬停效果
+    document.querySelector('.register-card').addEventListener('mouseenter', function() {
+        this.style.boxShadow = '0 20px 40px rgba(108, 92, 231, 0.2)';
+    });
+    document.querySelector('.register-card').addEventListener('mouseleave', function() {
+        this.style.boxShadow = 'var(--box-shadow)';
+    });
+</script>
 </body>
-</html> 
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份查询 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .query-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+        }
+        .query-card::after {
+            content: "";
+            display: block;
+            margin-top: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin: 0 -40px -40px -40px;
+            padding: 0;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent-color); }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(42, 63, 142, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        #resultCard {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+            margin-top: 24px;
+        }
+        #resultCard.show { display: block; }
+        .did-block {
+            background: linear-gradient(135deg, rgba(42, 63, 142, 0.08), rgba(108, 92, 231, 0.08));
+            border: 2px solid rgba(0, 201, 183, 0.3);
+            border-radius: 12px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--primary-color);
+        }
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+        .info-label { width: 90px; color: var(--text-light); font-size: 14px; }
+        .info-value { flex: 1; font-weight: 500; }
+        .err-msg { color: var(--danger-color); margin-top: 16px; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
+    </div>
+</div>
+<div class="container">
+    <div class="query-card">
+        <h1 class="card-title">
+            <i class="fas fa-search"></i>
+            身份查询
+        </h1>
+        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">输入 DID 查询已注册的数字身份</p>
+        <form id="queryForm">
+            <div class="form-group">
+                <label class="form-label">DID</label>
+                <input type="text" class="form-control" id="did" placeholder="如：did:blockdia:emp:1001" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnQuery">
+                <i class="fas fa-search"></i>
+                查询
+            </button>
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                返回首页
+            </a>
+        </form>
+    </div>
+    <div id="resultCard">
+        <h2 class="card-title" style="font-size: 20px;">
+            <i class="fas fa-id-card"></i>
+            查询结果
+        </h2>
+        <div class="did-block" id="resultDid">—</div>
+        <div class="info-row"><span class="info-label">工号</span><span class="info-value" id="resultEmployeeId">—</span></div>
+        <div class="info-row"><span class="info-label">姓名</span><span class="info-value" id="resultName">—</span></div>
+        <div class="info-row"><span class="info-label">部门</span><span class="info-value" id="resultDepartment">—</span></div>
+        <div class="info-row"><span class="info-label">职位</span><span class="info-value" id="resultPosition">—</span></div>
+        <div class="info-row"><span class="info-label">权限角色</span><span class="info-value" id="resultRole">—</span></div>
+        <div class="info-row"><span class="info-label">创建时间</span><span class="info-value" id="resultCreatedAt">—</span></div>
+        <a href="#" class="btn btn-secondary" id="linkCredential" style="margin-top: 16px;">查看完整凭证</a>
+    </div>
+    <p id="errMsg" class="err-msg" style="display: none;"></p>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('queryForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var did = document.getElementById('did').value.trim();
+        if (!did) {
+            document.getElementById('errMsg').style.display = 'block';
+            document.getElementById('errMsg').textContent = '请填写 DID';
+            document.getElementById('resultCard').classList.remove('show');
+            return;
+        }
+        document.getElementById('errMsg').style.display = 'none';
+        document.getElementById('btnQuery').disabled = true;
+        document.getElementById('btnQuery').innerHTML = '<i class="fas fa-spinner fa-spin"></i> 查询中...';
+        var url = '/api/identity/query?did=' + encodeURIComponent(did);
+        axios.get(url).then(function(res) {
+            document.getElementById('btnQuery').disabled = false;
+            document.getElementById('btnQuery').innerHTML = '<i class="fas fa-search"></i> 查询';
+            if (res.data.success) {
+                document.getElementById('resultDid').textContent = res.data.did || '—';
+                document.getElementById('resultEmployeeId').textContent = res.data.employeeId || '—';
+                document.getElementById('resultName').textContent = res.data.name || '—';
+                document.getElementById('resultDepartment').textContent = res.data.department || '—';
+                document.getElementById('resultPosition').textContent = res.data.position || '—';
+                document.getElementById('resultRole').textContent = res.data.role || '—';
+                document.getElementById('resultCreatedAt').textContent = res.data.createdAt || '—';
+                document.getElementById('linkCredential').href = '/identity/credential/' + res.data.id;
+                document.getElementById('linkCredential').style.display = 'inline-flex';
+                document.getElementById('resultCard').classList.add('show');
+            } else {
+                document.getElementById('errMsg').style.display = 'block';
+                document.getElementById('errMsg').textContent = res.data.message || '未查到对应身份';
+                document.getElementById('resultCard').classList.remove('show');
+            }
+        }).catch(function() {
+            document.getElementById('btnQuery').disabled = false;
+            document.getElementById('btnQuery').innerHTML = '<i class="fas fa-search"></i> 查询';
+            document.getElementById('errMsg').style.display = 'block';
+            document.getElementById('errMsg').textContent = '网络或服务异常';
+            document.getElementById('resultCard').classList.remove('show');
+        });
+    });
+    var notFound = new URLSearchParams(window.location.search).get('notFound');
+    if (notFound) {
+        document.getElementById('errMsg').style.display = 'block';
+        document.getElementById('errMsg').textContent = '未找到该身份凭证';
+    }
+</script>
+</body>
+</html>

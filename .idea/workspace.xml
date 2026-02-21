@@ -2,39 +2,246 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e713576a-ab42-4ea9-87ea-53dc0b72c48d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../Oauth2/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../hadoop001/src/main/java/MyMr1.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/config-server/src/main/resources/myconfig.jceks" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../springcloud/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/META-INF/analytics-service.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/CompanyClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/CompanyClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/JobseekerClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/JobseekerClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/RecruitmentClient.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/RecruitmentClient.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Controller/AnalyticsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Controller/AnalyticsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Pojo/DashboardStatsDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Pojo/DashboardStatsDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Service/Impl/AnalyticsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Service/Impl/AnalyticsServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service02/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service02/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/company-service/target/classes/com/test/Controller/StatsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Controller/FallbackController.class" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Controller/FallbackController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Filter/AuthFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Filter/AuthFilter.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/StatsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Mapper/ResumeMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Mapper/ResumeMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/ApplicationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/ApplicationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/StatsController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Mapper/ApplicationMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Mapper/ApplicationMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/Application.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/RecruitmentServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/RecruitmentServiceApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/ApplicationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/ApplicationService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/ApplicationServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/ApplicationServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Recruitment_system.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/analytics-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/AnalyticsServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Client/CompanyClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Client/JobseekerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Client/RecruitmentClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Controller/AnalyticsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Pojo/DashboardStatsDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Service/AnalyticsService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/java/com/test/Service/Impl/AnalyticsServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/AnalyticsServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/CompanyClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/JobseekerClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Client/RecruitmentClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Controller/AnalyticsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Pojo/DashboardStatsDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Service/AnalyticsService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/analytics-service/target/classes/com/test/Service/Impl/AnalyticsServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/auth-service.iml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/auth-service.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/test/AuthServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/test/AuthServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/test/Controller/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/test/Controller/RegisterController.java" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/java/com/test/Controller/RegisterController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/test/Mapper/UsersMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/java/com/test/Pojo/Users.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/test/AuthServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/test/AuthServiceApplication.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/test/Controller/LoginController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/test/Controller/RegisterController.class" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/com/test/Controller/RegisterController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/test/Mapper/UsersMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/com/test/Pojo/Users.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service/target/classes/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/target/classes/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/auth-service (1).iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/auth-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/java/com/test/AuthServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/java/com/test/Controller/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/java/com/test/Controller/RegisterController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/java/com/test/Mapper/UsersMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/java/com/test/Pojo/Users.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/templates/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/src/main/resources/templates/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/com/test/AuthServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/com/test/Controller/LoginController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/com/test/Controller/RegisterController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/com/test/Mapper/UsersMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/com/test/Pojo/Users.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/templates/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/templates/login.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/auth-service02/target/classes/templates/register.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/company-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Client/JobseekerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Client/RecruitmentClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/CompanyServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Controller/CompanyController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Controller/PositionController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Controller/StatsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Mapper/CompanyMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Mapper/PositionMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Pojo/Company.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/java/com/test/Pojo/Position.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/templates/applications.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/templates/company-profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/templates/position-form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/templates/position-list.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/src/main/resources/templates/view-resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Client/JobseekerClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Client/RecruitmentClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/CompanyServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Controller/CompanyController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Controller/PositionController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Mapper/CompanyMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Mapper/PositionMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Pojo/Company.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/com/test/Pojo/Position.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/templates/applications.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/templates/company-profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/templates/position-form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/templates/position-list.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/company-service/target/classes/templates/view-resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/eureka-server.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/src/main/java/com/test/EurekaServerApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka-server/target/classes/com/test/EurekaServerApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/gateway-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/test/gateway/Controller/ErrorController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/test/gateway/Controller/FallbackController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/test/gateway/Filter/AuthFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/java/com/test/gateway/GatewayApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/templates/error/401.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/templates/error/404.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/熔断器写法.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/负载均衡做法.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Controller/ErrorController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Controller/FallbackController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/Filter/AuthFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/com/test/gateway/GatewayApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/templates/error/401.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/templates/error/404.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/熔断器写法.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/target/classes/负载均衡做法.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/jobseeker-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Client/ApplicationClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Client/PositionClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Client/ResumeClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Controller/ApplicationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Controller/JobController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Controller/ResumeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Controller/StatsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/JobseekerServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Mapper/ResumeMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/java/com/test/Pojo/JobseekerResume.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/application-history.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/error.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/jobs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/src/main/resources/templates/view-resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Client/ApplicationClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Client/PositionClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Client/ResumeClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/ApplicationController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/JobController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/ResumeController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/JobseekerServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Mapper/ResumeMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/com/test/Pojo/JobseekerResume.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/application-history.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/error.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/jobs.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/profile.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobseeker-service/target/classes/templates/view-resume.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/recruitment-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Config/RabbitMQConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Controller/ApplicationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Controller/StatsController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Mapper/ApplicationMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Mapper/InterviewMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Mapper/OfferMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/Application.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/ApplicationStatusChangeMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/EmailMessage.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/Interview.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Pojo/Offer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/RecruitmentServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/ApplicationService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/EmailService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/Impl/ApplicationServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/Impl/ApplicationStatusProducer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/Impl/EmailConsumer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/Impl/EmailMessageProducer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/InterviewService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/java/com/test/Service/OfferService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Config/RabbitMQConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/ApplicationController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Controller/StatsController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Mapper/ApplicationMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Mapper/InterviewMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Mapper/OfferMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/Application.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/ApplicationStatusChangeMessage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/EmailMessage.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/Interview.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Pojo/Offer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/RecruitmentServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/ApplicationService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/EmailService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/ApplicationServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/ApplicationStatusProducer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/EmailConsumer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/Impl/EmailMessageProducer.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/InterviewService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/recruitment-service/target/classes/com/test/Service/OfferService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/resume-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Client/JobseekerClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Controller/ResumeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Controller/ResumeExportController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Mapper/ResumeMapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Pojo/JobseekerResume.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Pojo/Resumes.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/ResumeServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Service/Impl/ResumeExportServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Service/ResumeExportService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/java/com/test/Service/ResumeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Client/JobseekerClient.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Controller/ResumeController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Controller/ResumeExportController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Mapper/ResumeMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Pojo/JobseekerResume.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Pojo/Resumes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/ResumeServiceApplication.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Service/Impl/ResumeExportServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Service/ResumeExportService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/resume-service/target/classes/com/test/Service/ResumeService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/start-rabbitmq.bat" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,7 +341,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.AuthServiceApplication (1)">
+  <component name="RunManager" selected="Spring Boot.AuthServiceApplication">
     <configuration name="AnalyticsServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="analytics-service" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.test.AnalyticsServiceApplication" />
@@ -312,136 +519,71 @@
       <workItem from="1750900613281" duration="5618000" />
       <workItem from="1750912434625" duration="233000" />
       <workItem from="1750917608627" duration="2243000" />
+      <workItem from="1751125307495" duration="37000" />
+      <workItem from="1771638254605" duration="55000" />
+      <workItem from="1771641084551" duration="214000" />
+      <workItem from="1771642010415" duration="4856000" />
+      <workItem from="1771646986814" duration="6000" />
+      <workItem from="1771647035321" duration="10000" />
+      <workItem from="1771647150489" duration="25000" />
+      <workItem from="1771656405605" duration="1406000" />
+      <workItem from="1771659166416" duration="5674000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$/../" />
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
   <component name="WindowStateProjectService">
-    <state x="467" y="65" key="#BorrowApplication_(1)" timestamp="1749473153078">
+    <state width="1024" height="179" key="GridCell.Tab.0.bottom" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="467" y="65" key="#BorrowApplication_(1)/0.0.1536.816@0.0.1536.816" timestamp="1749473153078" />
-    <state x="403" y="32" key="#JobseekerServiceApplication" timestamp="1749816988106">
+    <state width="1024" height="179" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.0.center" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="403" y="32" key="#JobseekerServiceApplication/0.0.1536.816@0.0.1536.816" timestamp="1749816988106" />
-    <state x="361" y="67" key="#Project_Structure" timestamp="1750844800611">
+    <state width="1024" height="179" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.0.left" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="361" y="67" key="#Project_Structure/0.0.1536.816@0.0.1536.816" timestamp="1750844800611" />
-    <state x="353" y="63" width="1088" height="689" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1750500503159">
+    <state width="1024" height="179" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.0.right" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="353" y="63" width="1088" height="689" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1536.816@0.0.1536.816" timestamp="1750500503159" />
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser" timestamp="1750846149812">
+    <state width="1024" height="179" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.1.bottom" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="574" y="92" key="#com.intellij.ide.util.MemberChooser/0.0.1536.816@0.0.1536.816" timestamp="1750846149812" />
-    <state x="627" y="191" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1749813521359">
+    <state width="1024" height="179" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.1.center" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="627" y="191" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.816@0.0.1536.816" timestamp="1749813521359" />
-    <state x="412" y="333" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1749816230574">
+    <state width="1024" height="179" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.1.left" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="412" y="333" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1536.816@0.0.1536.816" timestamp="1749816230574" />
-    <state x="479" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1750231418987">
+    <state width="1024" height="179" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state width="1024" height="179" key="GridCell.Tab.1.right" timestamp="1771665027989">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="479" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1536.816@0.0.1536.816" timestamp="1750231418987" />
-    <state x="549" y="163" key="FileChooserDialogImpl" timestamp="1750767186522">
+    <state width="1024" height="179" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1771665027989" />
+    <state x="270" y="50" key="SettingsEditor" timestamp="1771659819725">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state x="549" y="163" key="FileChooserDialogImpl/0.0.1536.816@0.0.1536.816" timestamp="1750767186522" />
-    <state width="1024" height="293" key="GridCell.Tab.0.bottom" timestamp="1750921982962">
+    <state x="270" y="50" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1771659819725" />
+    <state x="178" y="103" key="new project wizard" timestamp="1771641295948">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1024" height="293" key="GridCell.Tab.0.bottom/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.0.center" timestamp="1750921982962">
+    <state x="178" y="103" key="new project wizard/0.0.1536.816@0.0.1536.816" timestamp="1771641295948" />
+    <state x="431" y="137" key="search.everywhere.popup" timestamp="1771642282723">
       <screen x="0" y="0" width="1536" height="816" />
     </state>
-    <state width="1024" height="293" key="GridCell.Tab.0.center/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.0.left" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.0.left/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.0.right" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.0.right/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.1.bottom" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.1.bottom/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.1.center" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.1.center/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.1.left" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.1.left/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="293" key="GridCell.Tab.1.right" timestamp="1750921982962">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="293" key="GridCell.Tab.1.right/0.0.1536.816@0.0.1536.816" timestamp="1750921982962" />
-    <state width="1024" height="314" key="GridCell.Tab.2.bottom" timestamp="1750905939397">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="314" key="GridCell.Tab.2.bottom/0.0.1536.816@0.0.1536.816" timestamp="1750905939397" />
-    <state width="1024" height="314" key="GridCell.Tab.2.center" timestamp="1750905939397">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="314" key="GridCell.Tab.2.center/0.0.1536.816@0.0.1536.816" timestamp="1750905939397" />
-    <state width="1024" height="314" key="GridCell.Tab.2.left" timestamp="1750905939397">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="314" key="GridCell.Tab.2.left/0.0.1536.816@0.0.1536.816" timestamp="1750905939397" />
-    <state width="1024" height="314" key="GridCell.Tab.2.right" timestamp="1750905939397">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state width="1024" height="314" key="GridCell.Tab.2.right/0.0.1536.816@0.0.1536.816" timestamp="1750905939397" />
-    <state x="349" y="151" key="IDE.errors.dialog" timestamp="1750814528805">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="349" y="151" key="IDE.errors.dialog/0.0.1536.816@0.0.1536.816" timestamp="1750814528805" />
-    <state x="429" y="106" key="NewModule_or_Project.wizard" timestamp="1750767239937">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="429" y="106" key="NewModule_or_Project.wizard/0.0.1536.816@0.0.1536.816" timestamp="1750767239937" />
-    <state x="494" y="130" key="RollbackChangesDialog" timestamp="1750579935309">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="494" y="130" key="RollbackChangesDialog/0.0.1536.816@0.0.1536.816" timestamp="1750579935309" />
-    <state x="270" y="0" key="SettingsEditor" timestamp="1750767241903">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="270" y="0" key="SettingsEditor/0.0.1536.816@0.0.1536.816" timestamp="1750767241903" />
-    <state x="387" y="23" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1750841453832">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="387" y="23" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1536.816@0.0.1536.816" timestamp="1750841453832" />
-    <state x="447" y="7" width="642" height="801" key="find.popup" timestamp="1750508805561">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="447" y="7" width="642" height="801" key="find.popup/0.0.1536.816@0.0.1536.816" timestamp="1750508805561" />
-    <state x="356" y="183" key="new project wizard" timestamp="1750767043693">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="356" y="183" key="new project wizard/0.0.1536.816@0.0.1536.816" timestamp="1750767043693" />
-    <state x="425" y="185" key="run.anything.popup" timestamp="1750510608104">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="425" y="185" key="run.anything.popup/0.0.1536.816@0.0.1536.816" timestamp="1750510608104" />
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup" timestamp="1749472917822">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="431" y="137" width="672" height="678" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1749472917822" />
-    <state x="424" y="91" key="spring file set editor" timestamp="1749813837974">
-      <screen x="0" y="0" width="1536" height="816" />
-    </state>
-    <state x="424" y="91" key="spring file set editor/0.0.1536.816@0.0.1536.816" timestamp="1749813837974" />
+    <state x="431" y="137" key="search.everywhere.popup/0.0.1536.816@0.0.1536.816" timestamp="1771642282723" />
   </component>
 </project>

@@ -1,211 +1,237 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.themleaf.org">
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>登录</title>
+    <title>管理员登录 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
             min-height: 100vh;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .logo {
             display: flex;
-            align-items: center;
-            margin-bottom: 20px;
+            flex-direction: column;
         }
-        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background-color: #333;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
             color: white;
-            margin-right: 10px;
+            margin-right: 12px;
         }
-        
         .logo-text {
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
-        input[type="text"],
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        .btn-login {
-            background-color: #1890ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 0;
-            font-size: 16px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        
-        .btn-login:hover {
-            background-color: #0c7cd5;
-        }
-        
-        .password-input {
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 440px;
+            margin: 40px auto;
+            padding: 20px;
             position: relative;
+            z-index: 1;
         }
-        
-        .password-icon {
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+        .login-card::after {
+            content: "";
             position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--blockchain-color));
         }
-        
-        .footer {
-            margin-top: 20px;
+        .card-header {
+            margin-bottom: 28px;
             text-align: center;
-            font-size: 14px;
-            color: #666;
         }
-        
-        .footer a {
-            color: #1890ff;
-            text-decoration: none;
-        }
-        
-        .remember-me {
+        .card-header h1 {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            margin-top: 5px;
+            justify-content: center;
+            gap: 10px;
         }
-        
-        .remember-me input {
-            margin-right: 5px;
+        .card-header h1 i { color: var(--accent-color); }
+        .card-header p { color: var(--text-light); font-size: 14px; margin-top: 8px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(42, 63, 142, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            color: white;
+            margin-top: 8px;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 16px;
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        .err-msg { color: var(--danger-color); font-size: 14px; margin-top: 12px; text-align: center; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
         }
     </style>
-    <!-- 引入axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <div class="logo-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20 7h-9"></path>
-                    <path d="M14 17H5"></path>
-                    <circle cx="17" cy="17" r="3"></circle>
-                    <circle cx="7" cy="7" r="3"></circle>
-                </svg>
-            </div>
-            <div class="logo-text">SupRecruitment</div>
-        </div>
-        
-        <h1>欢迎回来！</h1>
-        <p>请登录您的账号</p>
-        
-        <form id="loginForm">
-            <div class="form-group">
-                <input type="email" id="email" name="email" placeholder="请输入邮箱" required>
-            </div>
-            
-            <div class="form-group password-input">
-                <input type="password" id="password" name="password" placeholder="请输入密码" required>
-            </div>
-            
-            <div class="remember-me">
-                <input type="checkbox" id="rememberMe" name="rememberMe">
-                <label for="rememberMe">记住我</label>
-            </div>
-            
-            <button type="submit" class="btn-login">登录</button>
-        </form>
-        
-        <div class="footer">
-            还没有账号？<a href="register">立即注册</a>
-        </div>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
     </div>
-
-    <script>
-        // 表单提交
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
-            
-            const params = new URLSearchParams();
-            params.append('email', email);
-            params.append('password', password);
-            params.append('rememberMe', rememberMe);
-            
-            axios.post('/auth/login', params)
-                .then(response => {
-                    const data = response.data;
-                    if (data.success) {
-                        // 保存token
-                        localStorage.setItem('token', data.token);
-                        // 跳转页面
-                        window.location.href = '/auth/index';
-                    } else {
-                        alert(data.message || '登录失败，请检查邮箱和密码');
-                    }
-                })
-                .catch(error => {
-                    alert('登录失败，请稍后再试');
-                });
-        });
-
-        // 设置axios全局请求头
-        axios.interceptors.request.use(function (config) {
-            const token = localStorage.getItem('token');
-            if (token) {
-                config.headers['Authorization'] = 'Bearer ' + token;
+</div>
+<div class="container">
+    <div class="login-card">
+        <div class="card-header">
+            <h1><i class="fas fa-user-shield"></i> 管理员登录</h1>
+            <p>仅管理员可访问权限管理与审计日志</p>
+        </div>
+        <form id="loginForm">
+            <input type="hidden" id="redirect" th:value="${redirect}" value="/">
+            <div class="form-group">
+                <label class="form-label">用户名</label>
+                <input type="text" class="form-control" id="username" placeholder="请输入用户名" required autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-control" id="password" placeholder="请输入密码" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnSubmit">
+                <i class="fas fa-sign-in-alt"></i> 登录
+            </button>
+            <p id="errMsg" class="err-msg" style="display: none;"></p>
+        </form>
+        <a href="/" class="btn btn-secondary" style="display: block; text-align: center;">
+            <i class="fas fa-arrow-left"></i> 返回首页
+        </a>
+    </div>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var username = document.getElementById('username').value.trim();
+        var password = document.getElementById('password').value;
+        var redirect = document.getElementById('redirect').value || '/';
+        var btn = document.getElementById('btnSubmit');
+        var err = document.getElementById('errMsg');
+        err.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+        axios.post('/api/login', { username: username, password: password }).then(function(res) {
+            if (res.data.success) {
+                window.location.href = redirect;
+            } else {
+                err.textContent = res.data.message || '登录失败';
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 登录';
             }
-            return config;
-        }, function (error) {
-            return Promise.reject(error);
+        }).catch(function() {
+            err.textContent = '网络或服务异常';
+            err.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> 登录';
         });
-    </script>
+    });
+</script>
 </body>
 </html>

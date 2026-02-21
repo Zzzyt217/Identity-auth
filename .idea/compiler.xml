@@ -6,19 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="gateway-service" />
-        <module name="recruitment-service" />
         <module name="user-service" />
         <module name="borrow-service" />
         <module name="jobseekers-service" />
-        <module name="jobseeker-service" />
         <module name="auth-service" />
-        <module name="company-service" />
-        <module name="eureka-server" />
-        <module name="analytics-service" />
         <module name="book-service" />
-        <module name="resume-service" />
-        <module name="auth-service (1)" />
         <module name="Eureka" />
       </profile>
     </annotationProcessing>

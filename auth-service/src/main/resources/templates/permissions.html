@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>权限管理 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+        }
+        .card::after {
+            content: "";
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin: 32px -32px -32px -32px;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent-color); }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        th {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+        }
+        td { font-size: 14px; }
+        .did-cell { font-family: monospace; font-size: 12px; word-break: break-all; max-width: 200px; }
+        .role-select {
+            padding: 6px 10px;
+            border: 2px solid rgba(42, 63, 142, 0.2);
+            border-radius: 8px;
+            font-size: 13px;
+            min-width: 110px;
+        }
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-save {
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            color: white;
+            margin-right: 8px;
+        }
+        .btn-save:hover { transform: translateY(-1px); }
+        .btn-revoke {
+            background: rgba(214, 48, 49, 0.1);
+            color: var(--danger-color);
+        }
+        .btn-revoke:hover { background: var(--danger-color); color: white; }
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 16px;
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        .empty-tip { color: var(--text-light); text-align: center; padding: 40px; font-size: 14px; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h1 class="card-title">
+            <i class="fas fa-shield-alt"></i>
+            权限管理
+        </h1>
+        <p style="color: var(--text-light); margin-bottom: 20px; font-size: 14px;">修改员工权限角色或注销 DID</p>
+        <div class="table-wrap">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>工号</th>
+                        <th>姓名</th>
+                        <th>部门</th>
+                        <th>职位</th>
+                        <th>DID</th>
+                        <th>权限角色</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr><td colspan="7" class="empty-tip"><i class="fas fa-spinner fa-spin"></i> 加载中...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <a href="/" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            返回首页
+        </a>
+    </div>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function loadList() {
+        axios.get('/api/identity/list').then(function(res) {
+            var tbody = document.getElementById('tableBody');
+            if (!res.data.success || !res.data.list || res.data.list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-tip">暂无身份数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = res.data.list.map(function(item) {
+                return '<tr data-id="' + item.id + '">' +
+                    '<td>' + (item.employeeId || '—') + '</td>' +
+                    '<td>' + (item.name || '—') + '</td>' +
+                    '<td>' + (item.department || '—') + '</td>' +
+                    '<td>' + (item.position || '—') + '</td>' +
+                    '<td class="did-cell">' + (item.did || '—') + '</td>' +
+                    '<td><select class="role-select" data-id="' + item.id + '">' +
+                    '<option value="员工"' + (item.role === '员工' ? ' selected' : '') + '>员工</option>' +
+                    '<option value="超级管理员"' + (item.role === '超级管理员' ? ' selected' : '') + '>超级管理员</option>' +
+                    '</select></td>' +
+                    '<td>' +
+                    '<button type="button" class="btn btn-save" data-id="' + item.id + '"><i class="fas fa-save"></i> 保存</button>' +
+                    '<button type="button" class="btn btn-revoke" data-id="' + item.id + '"><i class="fas fa-user-times"></i> 注销DID</button>' +
+                    '</td></tr>';
+            }).join('');
+            bindActions();
+        }).catch(function() {
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" class="empty-tip">加载失败，请刷新重试</td></tr>';
+        });
+    }
+    function bindActions() {
+        document.querySelectorAll('.btn-save').forEach(function(btn) {
+            btn.onclick = function() {
+                var id = this.getAttribute('data-id');
+                var row = this.closest('tr');
+                var select = row.querySelector('.role-select');
+                var role = select ? select.value : '员工';
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 保存中...';
+                axios.put('/api/identity/' + id + '/role', { role: role }).then(function(res) {
+                    if (res.data.success) {
+                        alert('权限已更新');
+                    } else {
+                        alert(res.data.message || '更新失败');
+                    }
+                }).catch(function(err) {
+                    alert(err.response && err.response.data && err.response.data.message ? err.response.data.message : '请求失败');
+                }).finally(function() {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-save"></i> 保存';
+                });
+            };
+        });
+        document.querySelectorAll('.btn-revoke').forEach(function(btn) {
+            btn.onclick = function() {
+                if (!confirm('确定要注销该 DID 吗？注销后该身份记录将被删除，不可恢复。')) return;
+                var id = this.getAttribute('data-id');
+                var row = this.closest('tr');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+                axios.delete('/api/identity/' + id).then(function(res) {
+                    if (res.data.success) {
+                        row.remove();
+                        if (!document.getElementById('tableBody').querySelector('tr')) {
+                            document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" class="empty-tip">暂无身份数据</td></tr>';
+                        }
+                        alert('DID 已注销');
+                    } else {
+                        alert(res.data.message || '注销失败');
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-user-times"></i> 注销DID';
+                    }
+                }).catch(function(err) {
+                    alert(err.response && err.response.data && err.response.data.message ? err.response.data.message : '请求失败');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-times"></i> 注销DID';
+                });
+            };
+        });
+    }
+    document.addEventListener('DOMContentLoaded', loadList);
+</script>
+</body>
+</html>

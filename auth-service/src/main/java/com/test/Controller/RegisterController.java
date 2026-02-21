@@ -1,123 +1,81 @@
 package com.test.Controller;
 
-import com.test.Mapper.UsersMapper;
-import com.test.Pojo.Users;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import com.test.Entity.Identity;
+import com.test.service.IdentityService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 @Controller
 public class RegisterController {
 
+    private static final String SESSION_ADMIN = "admin";
+
+    @Resource
+    private IdentityService identityService;
+
+    /** 首页：根据是否管理员登录决定是否展示权限管理中心 */
+    @GetMapping("/")
+    public String index(Model model, HttpSession session) {
+        model.addAttribute("isAdmin", session.getAttribute(SESSION_ADMIN) != null);
+        return "index";
+    }
+
+    /** 管理员登录页 */
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "redirect", required = false) String redirect, Model model) {
+        model.addAttribute("redirect", redirect != null ? redirect : "/");
+        return "login";
+    }
+
+    /** 登出：清除 Session 并跳转首页 */
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.removeAttribute(SESSION_ADMIN);
+        return "redirect:/";
+    }
+
     @GetMapping("/register")
-    public String register(){
+    public String registerPage() {
         return "register";
     }
 
-    @Resource
-    JavaMailSender sender;
-    
-    @Resource
-    UsersMapper usersMapper;
-
-    @PostMapping("/code")//发送验证码
-    @ResponseBody
-    public Map<String, Object> getCode(@RequestParam String email, HttpSession session){
-        Map<String, Object> result = new HashMap<>();
-        
-        try {
-            // 验证邮箱是否已经注册
-            Users existingUser = usersMapper.findByEmail(email);
-            if (existingUser != null) {
-                result.put("success", false);
-                result.put("message", "该邮箱已注册");
-                return result;
-            }
-            
-            Random random = new Random();
-            int code = random.nextInt(900000) + 100000;
-            session.setAttribute("code", code);
-            // 保存邮箱到session，用于后续验证
-            session.setAttribute("codeEmail", email);
-            
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setSubject("验证码");
-            message.setText("您的验证码是: " + code);
-            message.setFrom("zzzyt217@163.com");
-            message.setTo(email);
-            sender.send(message);
-            
-            result.put("success", true);
-            result.put("message", "验证码已发送");
-        } catch (Exception e) {
-            result.put("success", false);
-            result.put("message", "发送失败");
-        }
-        
-        return result;
+    @GetMapping("/query")
+    public String queryPage() {
+        return "query";
     }
-    
-    @PostMapping("/register")//获得验证码后注册用户
-    @ResponseBody
-    public Map<String, Object> register(
-            @RequestParam String username,
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String verificationCode,
-            @RequestParam String role,
-            HttpSession session) {
-        
-        Map<String, Object> result = new HashMap<>();
-        
-        try {
-            // 验证码校验
-            Integer savedCode = (Integer) session.getAttribute("code");
-            String savedEmail = (String) session.getAttribute("codeEmail");
-            
-            // 验证邮箱一致性
-            if (savedEmail == null || !savedEmail.equals(email)) {
-                result.put("success", false);
-                result.put("message", "注册邮箱与验证码邮箱不一致");
-                return result;
-            }
-            
-            // 验证验证码
-            if (savedCode == null || !savedCode.toString().equals(verificationCode)) {
-                result.put("success", false);
-                result.put("message", "验证码错误");
-                return result;
-            }
-            
-            // 创建新用户
-            Users newUser = new Users();
-            newUser.setUsername(username);
-            newUser.setEemail(email);
-            newUser.setPassword(password);
-            newUser.setRole(role);
-            
-            usersMapper.insert(newUser);
-            result.put("success", true);
-            result.put("message", "注册成功");
-            
-            // 清除session中的验证码和邮箱
-            session.removeAttribute("code");
-            session.removeAttribute("codeEmail");
-            
-        } catch (Exception e) {
-            result.put("success", false);
-            result.put("message", "注册失败");
+
+    /** 凭证页：展示 DID 及身份信息 */
+    @GetMapping("/identity/credential/{id}")
+    public String credentialPage(@PathVariable Long id, Model model) {
+        Identity identity = identityService.getById(id);
+        if (identity == null) {
+            return "redirect:/query?notFound=1";
         }
-        
-        return result;
+        model.addAttribute("identity", identity);
+        return "credential";
+    }
+
+    /** 权限管理页：仅管理员可访问 */
+    @GetMapping("/admin/permissions")
+    public String permissionsPage(HttpSession session) {
+        if (session.getAttribute(SESSION_ADMIN) == null) {
+            return "redirect:/login?redirect=/admin/permissions";
+        }
+        return "permissions";
+    }
+
+    /** 审计日志页：仅管理员可访问 */
+    @GetMapping("/admin/audit")
+    public String auditPage(HttpSession session) {
+        if (session.getAttribute(SESSION_ADMIN) == null) {
+            return "redirect:/login?redirect=/admin/audit";
+        }
+        return "audit";
     }
 }
