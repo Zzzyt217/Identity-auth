@@ -1,4 +1,4 @@
-package com.test.mapper;
+package com.test.Mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.test.Entity.Identity;

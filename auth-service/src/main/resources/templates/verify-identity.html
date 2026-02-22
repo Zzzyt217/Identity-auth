@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身份验证 - 链上验证 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --success-color: #00b894;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+        }
+        .card::after {
+            content: "";
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin: 32px -32px -32px -32px;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent-color); }
+        .form-group { margin-bottom: 20px; }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-label .optional { color: var(--text-light); font-weight: 400; }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(42, 63, 142, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        #resultCard {
+            display: none;
+            margin-top: 28px;
+            padding: 24px;
+            background: linear-gradient(135deg, rgba(42, 63, 142, 0.06), rgba(108, 92, 231, 0.06));
+            border-radius: 12px;
+            border: 1px solid rgba(42, 63, 142, 0.15);
+        }
+        #resultCard.show { display: block; }
+        .result-status {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .result-status.pass { color: var(--success-color); }
+        .result-status.no-record { color: var(--text-light); }
+        .result-status.fail { color: var(--danger-color); }
+        .result-status.error { color: var(--danger-color); }
+        .hash-row {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .hash-row label { color: var(--text-light); display: block; margin-bottom: 4px; }
+        .hash-value { font-family: monospace; word-break: break-all; font-size: 12px; color: var(--primary-color); }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h1 class="card-title">
+            <i class="fas fa-id-card"></i>
+            身份验证
+        </h1>
+        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">提供 DID，通过智能合约核验该身份凭证对应的链上存证 hash 是否与当前信息一致。</p>
+        <form id="verifyForm">
+            <div class="form-group">
+                <label class="form-label">DID <span style="color: var(--danger-color);">*</span></label>
+                <input type="text" class="form-control" id="did" name="did" placeholder="如：did:blockdia:emp:1001" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="btnSubmit">
+                <i class="fas fa-check-circle"></i>
+                开始验证
+            </button>
+            <a href="/blockchain/verify" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                返回链上验证
+            </a>
+        </form>
+        <div id="resultCard">
+            <div class="result-status" id="resultStatus"></div>
+            <div class="hash-row" id="rowExpected">
+                <label>预期 hash（当前凭证内容计算）</label>
+                <div class="hash-value" id="expectedHash">—</div>
+            </div>
+            <div class="hash-row" id="rowActual">
+                <label>实际 hash（链上存证）</label>
+                <div class="hash-value" id="actualHash">—</div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    document.getElementById('verifyForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var did = document.getElementById('did').value.trim();
+        if (!did) {
+            alert('请填写 DID');
+            return;
+        }
+        var btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 验证中...';
+        var resultCard = document.getElementById('resultCard');
+        var url = '/api/chain/verify/identity?did=' + encodeURIComponent(did);
+        axios.get(url).then(function(res) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
+            resultCard.classList.add('show');
+            var statusEl = document.getElementById('resultStatus');
+            document.getElementById('expectedHash').textContent = res.data.expectedHash != null ? res.data.expectedHash : '—';
+            document.getElementById('actualHash').textContent = res.data.actualHash != null ? res.data.actualHash : '—';
+            document.getElementById('rowExpected').style.display = 'block';
+            document.getElementById('rowActual').style.display = 'block';
+            statusEl.className = 'result-status';
+            if (res.data.status === 'PASS') {
+                statusEl.classList.add('pass');
+                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
+            } else if (res.data.status === 'NO_RECORD') {
+                statusEl.classList.add('no-record');
+                statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';
+            } else if (res.data.status === 'MISMATCH') {
+                statusEl.classList.add('fail');
+                statusEl.innerHTML = '<i class="fas fa-times-circle"></i> 链上检验不通过：该身份存在问题（链上存证与当前内容不一致）。';
+            } else {
+                statusEl.classList.add('error');
+                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (res.data.message || '验证异常');
+            }
+        }).catch(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
+            resultCard.classList.add('show');
+            document.getElementById('resultStatus').className = 'result-status error';
+            document.getElementById('resultStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (err.response && err.response.data && err.response.data.message ? err.response.data.message : '验证服务暂未就绪或网络异常，请稍后重试。');
+            document.getElementById('rowExpected').style.display = 'none';
+            document.getElementById('rowActual').style.display = 'none';
+        });
+    });
+</script>
+</body>
+</html>

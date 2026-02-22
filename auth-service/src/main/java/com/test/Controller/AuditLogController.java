@@ -1,7 +1,7 @@
 package com.test.Controller;
 
 import com.test.Entity.AuditLog;
-import com.test.service.AuditLogService;
+import com.test.Service.AuditLogService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

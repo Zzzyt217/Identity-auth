@@ -1,4 +1,4 @@
-package com.test.service;
+package com.test.Service;
 
 import com.test.Entity.AuditLog;
 
@@ -24,4 +24,9 @@ public interface AuditLogService {
      * 查询全部审计日志，按时间倒序
      */
     List<AuditLog> listAll();
+
+    /**
+     * 根据上链交易哈希查询审计日志（用于操作验证）
+     */
+    AuditLog getByChainTxHash(String chainTxHash);
 }

@@ -1,10 +1,11 @@
-package com.test.service.impl;
+package com.test.Service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.test.Entity.Identity;
-import com.test.mapper.IdentityMapper;
-import com.test.service.AuditLogService;
-import com.test.service.IdentityService;
+import com.test.blockchain.ChainEvidenceService;
+import com.test.Mapper.IdentityMapper;
+import com.test.Service.AuditLogService;
+import com.test.Service.IdentityService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,8 @@ public class IdentityServiceImpl implements IdentityService {
     private IdentityMapper identityMapper;
     @Resource
     private AuditLogService auditLogService;
+    @Resource
+    private ChainEvidenceService chainEvidenceService;
 
     /** 默认角色 */
     private static final String DEFAULT_ROLE = "员工";
@@ -49,6 +52,15 @@ public class IdentityServiceImpl implements IdentityService {
         identity.setDid(did);
         identity.setCreatedAt(LocalDateTime.now());
         identityMapper.insert(identity);
+        // 用 DB 中实际存储的那条记录算 hash 再上链，避免 created_at 与内存值不一致导致验证不通过
+        Identity identityFromDb = identityMapper.selectById(identity.getId());
+        String contentHash = identityFromDb != null ? Identity.computeContentHash(identityFromDb) : Identity.computeContentHash(identity);
+        ChainEvidenceService.EvidenceResult evidence = chainEvidenceService.saveEvidence(identity.getDid(), contentHash);
+        if (evidence != null) {
+            identity.setChainTxHash(evidence.getTransactionHash());
+            identity.setChainBlockNumber(evidence.getBlockNumber());
+            identityMapper.updateById(identity);
+        }
         return identity;
     }
 
@@ -68,8 +80,20 @@ public class IdentityServiceImpl implements IdentityService {
     }
 
     @Override
+    public Identity getByChainTxHash(String chainTxHash) {
+        if (chainTxHash == null || chainTxHash.trim().isEmpty()) return null;
+        return identityMapper.selectOne(
+                new LambdaQueryWrapper<Identity>().eq(Identity::getChainTxHash, chainTxHash.trim()).last("LIMIT 1"));
+    }
+
+    @Override
     public List<Identity> listAll() {
         return identityMapper.selectList(null);
+    }
+
+    @Override
+    public long count() {
+        return identityMapper.selectCount(null);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.test.Controller;
 
 import com.test.Entity.Identity;
-import com.test.service.IdentityService;
+import com.test.Service.IdentityService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -127,6 +127,8 @@ public class IdentityController {
         data.put("position", identity.getPosition());
         data.put("role", identity.getRole());
         data.put("createdAt", identity.getCreatedAt() != null ? identity.getCreatedAt().toString() : null);
+        data.put("chainTxHash", identity.getChainTxHash());
+        data.put("chainBlockNumber", identity.getChainBlockNumber());
         return data;
     }
 

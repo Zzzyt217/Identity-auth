@@ -1,4 +1,4 @@
-package com.test.service;
+package com.test.Service;
 
 import com.test.Entity.Identity;
 
@@ -35,9 +35,19 @@ public interface IdentityService {
     Identity getByEmployeeId(String employeeId);
 
     /**
+     * 按上链交易哈希查询（用于操作认证时验证身份注册存证）
+     */
+    Identity getByChainTxHash(String chainTxHash);
+
+    /**
      * 查询全部身份（权限管理列表用）
      */
     java.util.List<Identity> listAll();
+
+    /**
+     * 注册身份总数（首页展示用）
+     */
+    long count();
 
     /**
      * 修改权限角色

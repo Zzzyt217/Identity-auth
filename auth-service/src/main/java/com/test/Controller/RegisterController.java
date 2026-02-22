@@ -1,7 +1,7 @@
 package com.test.Controller;
 
 import com.test.Entity.Identity;
-import com.test.service.IdentityService;
+import com.test.Service.IdentityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,10 +19,11 @@ public class RegisterController {
     @Resource
     private IdentityService identityService;
 
-    /** 首页：根据是否管理员登录决定是否展示权限管理中心 */
+    /** 首页：根据是否管理员登录决定是否展示权限管理中心，并传入注册人数 */
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         model.addAttribute("isAdmin", session.getAttribute(SESSION_ADMIN) != null);
+        model.addAttribute("didCount", identityService.count());
         return "index";
     }
 

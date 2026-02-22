@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审计存证 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+        }
+        .card::after {
+            content: "";
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin: 32px -32px -32px -32px;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent-color); }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 10px; text-align: left; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        th {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 13px;
+        }
+        td { font-size: 14px; }
+        .did-cell { font-family: monospace; font-size: 12px; word-break: break-all; max-width: 200px; }
+        .hash-cell { font-family: monospace; font-size: 11px; word-break: break-all; max-width: 200px; color: var(--blockchain-color); }
+        .btn-secondary {
+            padding: 10px 20px;
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            margin-right: 10px;
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        .empty-tip { color: var(--text-light); text-align: center; padding: 40px; font-size: 14px; }
+        .pagination { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-decoration: none;
+            color: var(--primary-color);
+            background: rgba(42, 63, 142, 0.1);
+        }
+        .pagination a:hover { background: var(--primary-color); color: white; }
+        .pagination span.current { background: var(--primary-color); color: white; pointer-events: none; }
+        .pagination span.disabled { opacity: 0.5; pointer-events: none; }
+        .link-credential { color: var(--accent-color); text-decoration: none; font-weight: 500; }
+        .link-credential:hover { text-decoration: underline; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h1 class="card-title">
+            <i class="fas fa-history"></i>
+            审计存证
+        </h1>
+        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">已上链的身份注册、权限修改、注销 DID 等存证，可据此在链上核验交易哈希与区块号。</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>操作类型</th>
+                        <th>目标DID</th>
+                        <th>工号</th>
+                        <th>姓名</th>
+                        <th>操作说明</th>
+                        <th>操作时间</th>
+                        <th>交易哈希</th>
+                        <th>区块号</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:if="${#lists.isEmpty(allRecords)}">
+                        <td colspan="8" class="empty-tip">暂无存证记录</td>
+                    </tr>
+                    <tr th:each="r : ${allRecords}">
+                        <td th:text="${r.operationTypeDisplay}">—</td>
+                        <td class="did-cell" th:text="${r.targetDid}">—</td>
+                        <td th:text="${r.employeeId}">—</td>
+                        <td th:text="${r.name}">—</td>
+                        <td th:text="${r.detail}">—</td>
+                        <td th:text="${r.time != null ? r.time.toString() : '—'}">—</td>
+                        <td class="hash-cell" th:text="${r.chainTxHash}">—</td>
+                        <td th:text="${r.chainBlockNumber != null ? r.chainBlockNumber : '—'}">—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:if="${currentPage > 1}" th:href="@{/blockchain/evidence/audit(page=${currentPage - 1})}">上一页</a>
+            <span th:if="${currentPage <= 1}" class="disabled">上一页</span>
+            <th:block th:each="p : ${#numbers.sequence(1, totalPages)}">
+                <a th:if="${p != currentPage}" th:href="@{/blockchain/evidence/audit(page=${p})}" th:text="${p}">1</a>
+                <span th:if="${p == currentPage}" class="current" th:text="${p}">1</span>
+            </th:block>
+            <a th:if="${currentPage < totalPages}" th:href="@{/blockchain/evidence/audit(page=${currentPage + 1})}">下一页</a>
+            <span th:if="${currentPage >= totalPages}" class="disabled">下一页</span>
+        </div>
+        <a href="/blockchain/evidence" class="btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            返回存证记录
+        </a>
+        <a href="/" class="btn-secondary">
+            <i class="fas fa-home"></i>
+            返回首页
+        </a>
+    </div>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+</body>
+</html>

@@ -509,7 +509,7 @@
 
             <div class="chain-status">
                 <span class="chain-dot"></span>
-                <span>区块链网络状态: 运行中 | 最新区块高度: #1,234,567</span>
+                <span>区块链网络状态: 运行中 | 最新区块高度: #<span id="chain-block-height">—</span></span>
             </div>
         </div>
     </div>
@@ -614,9 +614,16 @@
         });
     });
 
-    // 页面加载完成提示
+    // 拉取链上区块高度并更新首页展示
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('页面加载完成，系统运行中...');
+        var el = document.getElementById('chain-block-height');
+        if (el) {
+            axios.get('/api/chain/block-number').then(function(r) {
+                if (r.data && r.data.blockNumber != null) {
+                    el.textContent = Number(r.data.blockNumber).toLocaleString();
+                }
+            }).catch(function() {});
+        }
     });
 </script>
 </body>
