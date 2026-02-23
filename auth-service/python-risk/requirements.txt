@@ -1,0 +1,7 @@
+# AI 智能风控 - Python 异常检测服务依赖
+# 使用方式：在 python-risk 目录下执行  pip install -r requirements.txt
+
+flask>=2.0.0
+scikit-learn>=1.0.0
+numpy>=1.20.0
+joblib>=1.1.0

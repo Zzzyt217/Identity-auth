@@ -2,9 +2,14 @@ package com.test.Controller;
 
 import com.test.Entity.Identity;
 import com.test.Service.IdentityService;
+import com.test.risk.BehaviorRecordService;
+import com.test.risk.AiRiskEngine;
+import com.test.risk.RiskResult;
+import com.test.risk.RiskEscalationService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +24,14 @@ public class IdentityController {
 
     @Resource
     private IdentityService identityService;
+
+    @Resource
+    private BehaviorRecordService behaviorRecordService;
+
+    @Resource
+    private AiRiskEngine aiRiskEngine;
+    @Resource
+    private RiskEscalationService riskEscalationService;
 
     /**
      * 注册：生成 DID 并入库，返回身份信息（含 id、did）
@@ -97,7 +110,14 @@ public class IdentityController {
      */
     @GetMapping("/identity/query")
     public Map<String, Object> query(@RequestParam(required = false) String did,
-                                      @RequestParam(required = false) String employeeId) {
+                                      @RequestParam(required = false) String employeeId,
+                                      HttpSession session) {
+        String userId = session != null && session.getAttribute("user") != null
+                ? (String) session.getAttribute("user") : "anonymous";
+        if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            return riskEscalationService.createRefuseResponse();
+        }
+        behaviorRecordService.record(userId, BehaviorRecordService.ACTION_IDENTITY_QUERY, System.currentTimeMillis());
         if ((did == null || did.trim().isEmpty()) && (employeeId == null || employeeId.trim().isEmpty())) {
             Map<String, Object> err = new HashMap<>();
             err.put("success", false);
@@ -129,6 +149,21 @@ public class IdentityController {
         data.put("createdAt", identity.getCreatedAt() != null ? identity.getCreatedAt().toString() : null);
         data.put("chainTxHash", identity.getChainTxHash());
         data.put("chainBlockNumber", identity.getChainBlockNumber());
+        if (aiRiskEngine != null) {
+            try {
+                RiskResult r = aiRiskEngine.evaluateRisk(userId);
+                Map<String, Object> risk = new HashMap<>();
+                risk.put("riskDetected", r.isRiskDetected());
+                risk.put("riskLevel", r.getRiskLevel());
+                risk.put("score", r.getScore());
+                risk.put("message", r.getMessage());
+                risk.put("riskSource", r.getRiskSource());
+                data.put("risk", risk);
+                if (riskEscalationService != null && session != null) {
+                    riskEscalationService.applyAfterRequest(session, r);
+                }
+            } catch (Exception ignored) { }
+        }
         return data;
     }
 

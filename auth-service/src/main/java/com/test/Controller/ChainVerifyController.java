@@ -5,6 +5,10 @@ import com.test.Entity.Identity;
 import com.test.Service.AuditLogService;
 import com.test.Service.IdentityService;
 import com.test.blockchain.EvidenceStorageContract;
+import com.test.risk.BehaviorRecordService;
+import com.test.risk.AiRiskEngine;
+import com.test.risk.RiskResult;
+import com.test.risk.RiskEscalationService;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.protocol.Web3j;
 import org.fisco.bcos.web3j.tx.gas.ContractGasProvider;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,6 +35,14 @@ public class ChainVerifyController {
     private IdentityService identityService;
     @Autowired
     private AuditLogService auditLogService;
+
+    @Autowired
+    private BehaviorRecordService behaviorRecordService;
+
+    @Autowired
+    private AiRiskEngine aiRiskEngine;
+    @Autowired
+    private RiskEscalationService riskEscalationService;
 
     @Autowired(required = false)
     private Web3j web3j;
@@ -64,10 +77,18 @@ public class ChainVerifyController {
      */
     @GetMapping("/verify/identity")
     public Map<String, Object> verifyIdentity(@RequestParam String did,
-                                              @RequestParam(required = false) String txHash) {
+                                              @RequestParam(required = false) String txHash,
+                                              HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         did = did != null ? did.trim() : "";
+        String userId = session != null && session.getAttribute("user") != null
+                ? (String) session.getAttribute("user") : "anonymous";
+        if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            return riskEscalationService.createRefuseResponse();
+        }
+        behaviorRecordService.record(userId, BehaviorRecordService.ACTION_CHAIN_VERIFY, System.currentTimeMillis());
         if (did.isEmpty()) {
+            attachRisk(result, userId, session);
             result.put("status", "ERROR");
             result.put("message", "请提供 DID");
             result.put("expectedHash", null);
@@ -76,6 +97,7 @@ public class ChainVerifyController {
         }
         Identity identity = identityService.getByDid(did);
         if (identity == null) {
+            attachRisk(result, userId, session);
             result.put("status", "NO_RECORD");
             result.put("message", "该身份不存在或链上无此 DID 记录");
             result.put("expectedHash", null);
@@ -84,6 +106,7 @@ public class ChainVerifyController {
         }
         if (web3j == null || credentials == null || gasProvider == null
                 || contractAddress == null || contractAddress.trim().isEmpty()) {
+            attachRisk(result, userId, session);
             result.put("status", "ERROR");
             result.put("message", "链上服务未配置或未就绪");
             result.put("expectedHash", null);
@@ -99,6 +122,7 @@ public class ChainVerifyController {
             }
             actualHash = actualHash.trim();
             if (actualHash.isEmpty()) {
+                attachRisk(result, userId, session);
                 result.put("status", "NO_RECORD");
                 result.put("message", "链上无存证：该身份尚未上链或链上无此 DID 记录。");
                 result.put("expectedHash", expectedHash);
@@ -106,18 +130,21 @@ public class ChainVerifyController {
                 return result;
             }
             if (actualHash.equals(expectedHash)) {
+                attachRisk(result, userId, session);
                 result.put("status", "PASS");
                 result.put("message", "链上核验通过：当前凭证内容与链上存证一致，未被篡改。");
                 result.put("expectedHash", expectedHash);
                 result.put("actualHash", actualHash);
                 return result;
             }
+            attachRisk(result, userId, session);
             result.put("status", "MISMATCH");
             result.put("message", "链上检验不通过：该身份存在问题（链上存证与当前内容不一致）。");
             result.put("expectedHash", expectedHash);
             result.put("actualHash", actualHash);
             return result;
         } catch (Exception e) {
+            attachRisk(result, userId, session);
             result.put("status", "ERROR");
             result.put("message", "链上查询失败：" + (e.getMessage() != null ? e.getMessage() : "请稍后重试"));
             result.put("expectedHash", null);
@@ -131,10 +158,17 @@ public class ChainVerifyController {
      * GET /api/chain/verify/audit?txHash=xxx
      */
     @GetMapping("/verify/audit")
-    public Map<String, Object> verifyAudit(@RequestParam String txHash) {
+    public Map<String, Object> verifyAudit(@RequestParam String txHash, HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         txHash = txHash != null ? txHash.trim() : "";
+        String userId = session != null && session.getAttribute("user") != null
+                ? (String) session.getAttribute("user") : "anonymous";
+        if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            return riskEscalationService.createRefuseResponse();
+        }
+        behaviorRecordService.record(userId, BehaviorRecordService.ACTION_CHAIN_VERIFY, System.currentTimeMillis());
         if (txHash.isEmpty()) {
+            attachRisk(result, userId, session);
             result.put("status", "ERROR");
             result.put("message", "请提供交易哈希");
             result.put("expectedHash", null);
@@ -143,6 +177,7 @@ public class ChainVerifyController {
         }
         if (web3j == null || credentials == null || gasProvider == null
                 || contractAddress == null || contractAddress.trim().isEmpty()) {
+            attachRisk(result, userId, session);
             result.put("status", "ERROR");
             result.put("message", "链上服务未配置或未就绪");
             result.put("expectedHash", null);
@@ -152,13 +187,18 @@ public class ChainVerifyController {
         // 1) 先按交易哈希查审计记录（权限修改、注销等）
         AuditLog log = auditLogService.getByChainTxHash(txHash);
         if (log != null) {
-            return verifyAuditRecord(result, log);
+            Map<String, Object> r = verifyAuditRecord(result, log);
+            attachRisk(r, userId, session);
+            return r;
         }
         // 2) 再按交易哈希查身份记录（注册上链）
         Identity identity = identityService.getByChainTxHash(txHash);
         if (identity != null) {
-            return verifyIdentityRecord(result, identity);
+            Map<String, Object> r = verifyIdentityRecord(result, identity);
+            attachRisk(r, userId, session);
+            return r;
         }
+        attachRisk(result, userId, session);
         result.put("status", "NO_RECORD");
         result.put("message", "未找到该交易对应的存证记录。请确认交易哈希是否正确，且为身份注册或权限/注销等已上链操作。");
         result.put("expectedHash", null);
@@ -242,5 +282,23 @@ public class ChainVerifyController {
      */
     private String computeIdentityHash(Identity identity) {
         return Identity.computeContentHash(identity);
+    }
+
+    /** 在响应中附带当前用户的风险检查结果，并做中风险预警后操作次数累计（供升级为拒绝）。 */
+    private void attachRisk(Map<String, Object> result, String userId, HttpSession session) {
+        if (aiRiskEngine == null) return;
+        try {
+            RiskResult r = aiRiskEngine.evaluateRisk(userId);
+            Map<String, Object> risk = new HashMap<>();
+            risk.put("riskDetected", r.isRiskDetected());
+            risk.put("riskLevel", r.getRiskLevel());
+            risk.put("score", r.getScore());
+            risk.put("message", r.getMessage());
+            risk.put("riskSource", r.getRiskSource());
+            result.put("risk", risk);
+            if (riskEscalationService != null && session != null) {
+                riskEscalationService.applyAfterRequest(session, r);
+            }
+        } catch (Exception ignored) { }
     }
 }

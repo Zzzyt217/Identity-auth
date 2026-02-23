@@ -2,6 +2,7 @@ package com.test.Controller;
 
 import com.test.Entity.Identity;
 import com.test.Service.IdentityService;
+import com.test.risk.RiskEscalationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,11 +19,14 @@ public class RegisterController {
 
     @Resource
     private IdentityService identityService;
+    @Resource
+    private RiskEscalationService riskEscalationService;
 
-    /** 首页：根据是否管理员登录决定是否展示权限管理中心，并传入注册人数 */
+    /** 首页：根据是否管理员/测试用户登录展示权限管理中心及登录区 */
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         model.addAttribute("isAdmin", session.getAttribute(SESSION_ADMIN) != null);
+        model.addAttribute("currentUser", session.getAttribute("user")); // user1 / user2 / user3 或 null
         model.addAttribute("didCount", identityService.count());
         return "index";
     }
@@ -31,13 +35,24 @@ public class RegisterController {
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "redirect", required = false) String redirect, Model model) {
         model.addAttribute("redirect", redirect != null ? redirect : "/");
+        model.addAttribute("testUserLogin", false);
         return "login";
     }
 
-    /** 登出：清除 Session 并跳转首页 */
+    /** 测试用户登录页（与管理员登录分开） */
+    @GetMapping("/login/test")
+    public String testUserLoginPage(@RequestParam(value = "redirect", required = false) String redirect, Model model) {
+        model.addAttribute("redirect", redirect != null ? redirect : "/");
+        model.addAttribute("testUserLogin", true);
+        return "login";
+    }
+
+    /** 登出：清除 Session（管理员 + 测试用户 + 风险升级状态）并跳转首页 */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.removeAttribute(SESSION_ADMIN);
+        session.removeAttribute("user");
+        if (riskEscalationService != null) riskEscalationService.clearSessionState(session);
         return "redirect:/";
     }
 
@@ -78,5 +93,11 @@ public class RegisterController {
             return "redirect:/login?redirect=/admin/audit";
         }
         return "audit";
+    }
+
+    /** AI 智能风控 - 风险报告页（调用 /api/risk/check 展示当前用户风险分析结果） */
+    @GetMapping("/auth/risk-report")
+    public String riskReportPage() {
+        return "risk-report";
     }
 }

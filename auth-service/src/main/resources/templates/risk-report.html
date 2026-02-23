@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>风险报告 - AI智能风控 - 基于区块链的企业智能身份认证管理系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2a3f8e;
+            --accent-color: #00c9b7;
+            --blockchain-color: #6c5ce7;
+            --text-color: #333;
+            --text-light: #666;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #d63031;
+            --border-radius: 16px;
+            --box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+        }
+        .logo { display: flex; align-items: center; }
+        .logo-icon {
+            width: 45px; height: 45px;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            color: white;
+            margin-right: 12px;
+        }
+        .logo-text {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--blockchain-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .logo-sub { font-size: 12px; color: var(--text-light); margin-left: 5px; }
+        .container {
+            flex: 1;
+            max-width: 640px;
+            margin: 40px auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+        }
+        .card::after {
+            content: "";
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin: 32px -32px -32px -32px;
+        }
+        .card-title {
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-title i { color: var(--accent-color); }
+        #loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+        #loading i { font-size: 32px; margin-bottom: 16px; }
+        #resultCard {
+            display: none;
+        }
+        #resultCard.show { display: block; }
+        .risk-level-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .risk-level-badge.low {
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.2), rgba(0, 201, 183, 0.2));
+            color: var(--success-color);
+        }
+        .risk-level-badge.medium {
+            background: linear-gradient(135deg, rgba(253, 203, 110, 0.3), rgba(255, 159, 67, 0.3));
+            color: var(--warning-color);
+        }
+        .risk-level-badge.high {
+            background: linear-gradient(135deg, rgba(214, 48, 49, 0.2), rgba(255, 107, 107, 0.2));
+            color: var(--danger-color);
+        }
+        .risk-score {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+        .risk-score strong { color: var(--primary-color); font-size: 20px; }
+        .risk-source {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+        .risk-source.model { color: var(--blockchain-color); font-weight: 500; }
+        .risk-message {
+            padding: 16px;
+            background: linear-gradient(135deg, rgba(42, 63, 142, 0.06), rgba(108, 92, 231, 0.06));
+            border-radius: 12px;
+            border: 1px solid rgba(42, 63, 142, 0.15);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .btn-secondary {
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+        }
+        .btn-secondary:hover { background: var(--primary-color); color: white; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon"><i class="fas fa-link"></i></div>
+        <span class="logo-text">BlockDIA</span>
+        <span class="logo-sub">· 区块链智能身份认证</span>
+    </div>
+</div>
+<div class="container">
+    <div class="card">
+        <h1 class="card-title">
+            <i class="fas fa-chart-line"></i>
+            AI 智能风控 - 风险报告
+        </h1>
+        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">基于近期链上验证与身份查询行为，AI 风险引擎实时分析并输出风险等级与说明。</p>
+        <div id="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>正在加载风险分析结果…</p>
+        </div>
+        <div id="resultCard">
+            <div class="risk-level-badge" id="riskLevelBadge">—</div>
+            <div class="risk-score">风险分数：<strong id="riskScore">—</strong></div>
+            <div class="risk-source" id="riskSourceLine">评估来源：—</div>
+            <div class="risk-message" id="riskMessage">—</div>
+            <a href="/" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                返回首页
+            </a>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    (function() {
+        var loading = document.getElementById('loading');
+        var resultCard = document.getElementById('resultCard');
+        axios.get('/api/risk/check').then(function(res) {
+            loading.style.display = 'none';
+            resultCard.classList.add('show');
+            var data = res.data;
+            var levelClass = 'low';
+            if (data.riskLevel === '高') levelClass = 'high';
+            else if (data.riskLevel === '中') levelClass = 'medium';
+            var badge = document.getElementById('riskLevelBadge');
+            badge.textContent = '风险等级：' + (data.riskLevel || '低');
+            badge.className = 'risk-level-badge ' + levelClass;
+            document.getElementById('riskScore').textContent = data.score != null ? data.score : '0';
+            var sourceEl = document.getElementById('riskSourceLine');
+            if (data.riskSource === 'model') {
+                sourceEl.textContent = '评估来源：AI 异常检测模型';
+                sourceEl.className = 'risk-source model';
+            } else {
+                sourceEl.textContent = '评估来源：规则引擎';
+                sourceEl.className = 'risk-source';
+            }
+            document.getElementById('riskMessage').textContent = data.message || '当前行为在正常范围内。';
+        }).catch(function() {
+            loading.style.display = 'none';
+            resultCard.classList.add('show');
+            document.getElementById('riskLevelBadge').textContent = '风险等级：—';
+            document.getElementById('riskLevelBadge').className = 'risk-level-badge low';
+            document.getElementById('riskScore').textContent = '—';
+            document.getElementById('riskSourceLine').textContent = '评估来源：—';
+            document.getElementById('riskSourceLine').className = 'risk-source';
+            document.getElementById('riskMessage').textContent = '无法获取风险分析结果，请稍后重试或确认已登录。';
+        });
+    })();
+</script>
+</body>
+</html>

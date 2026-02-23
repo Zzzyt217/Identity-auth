@@ -174,6 +174,30 @@
         }
         .hash-row label { color: var(--text-light); display: block; margin-bottom: 4px; }
         .hash-value { font-family: monospace; word-break: break-all; font-size: 12px; color: var(--primary-color); }
+        .risk-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .risk-modal-overlay.show { display: flex; }
+        .risk-modal-box {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 28px;
+            max-width: 420px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            border-top: 4px solid var(--danger-color);
+        }
+        .risk-modal-box h3 { margin-bottom: 12px; color: var(--danger-color); font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .risk-modal-box p { color: var(--text-light); font-size: 14px; line-height: 1.6; margin-bottom: 20px; }
+        .risk-modal-box .risk-level-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+        .risk-modal-box .risk-level-badge.high { background: rgba(214,48,49,0.2); color: var(--danger-color); }
+        .risk-modal-box .risk-level-badge.medium { background: rgba(253,203,110,0.3); color: #b8860b; }
+        .risk-modal-box button { padding: 10px 24px; border: none; border-radius: 30px; background: var(--primary-color); color: white; font-weight: 600; cursor: pointer; }
         .footer {
             text-align: center;
             padding: 20px;
@@ -230,6 +254,15 @@
 <div class="footer">
     <p>© 2026 基于区块链的企业智能身份认证管理系统 · 成都信息工程大学人工智能学院</p>
 </div>
+<div id="riskModal" class="risk-modal-overlay">
+    <div class="risk-modal-box">
+        <h3><i class="fas fa-exclamation-triangle"></i> AI 智能风控提示</h3>
+        <div id="riskModalLevel" class="risk-level-badge high">风险等级：高</div>
+        <p id="riskModalSource" style="font-size:12px;color:var(--text-light);margin-bottom:8px;"></p>
+        <p id="riskModalMessage">检测到短时间多次链上验证或身份查询，请确认是否为本人操作。</p>
+        <button type="button" id="riskModalClose">确定</button>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
     document.getElementById('verifyForm').addEventListener('submit', function(e) {
@@ -248,6 +281,20 @@
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
             resultCard.classList.add('show');
+            if (res.data && res.data.riskBlocked) {
+                var level = (res.data.risk && res.data.risk.riskLevel) ? res.data.risk.riskLevel : '高';
+                var msg = (res.data.risk && res.data.risk.message) ? res.data.risk.message : '拒绝操作';
+                document.getElementById('riskModalLevel').textContent = '风险等级：' + level;
+                document.getElementById('riskModalLevel').className = 'risk-level-badge high';
+                document.getElementById('riskModalMessage').textContent = msg;
+                document.getElementById('riskModalSource').textContent = '评估来源：规则引擎';
+                document.getElementById('riskModal').classList.add('show');
+                document.getElementById('resultStatus').className = 'result-status error';
+                document.getElementById('resultStatus').innerHTML = '<i class="fas fa-ban"></i> 拒绝操作';
+                document.getElementById('rowExpected').style.display = 'none';
+                document.getElementById('rowActual').style.display = 'none';
+                return;
+            }
             var statusEl = document.getElementById('resultStatus');
             document.getElementById('expectedHash').textContent = res.data.expectedHash != null ? res.data.expectedHash : '—';
             document.getElementById('actualHash').textContent = res.data.actualHash != null ? res.data.actualHash : '—';
@@ -267,6 +314,15 @@
                 statusEl.classList.add('error');
                 statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (res.data.message || '验证异常');
             }
+            if (res.data.risk && res.data.risk.riskDetected) {
+                var level = res.data.risk.riskLevel || '高';
+                var msg = res.data.risk.message || '检测到短时间多次链上验证或身份查询，请确认是否为本人操作。';
+                document.getElementById('riskModalLevel').textContent = '风险等级：' + level;
+                document.getElementById('riskModalLevel').className = 'risk-level-badge ' + (level === '高' ? 'high' : (level === '中' ? 'medium' : 'high'));
+                document.getElementById('riskModalMessage').textContent = msg;
+                document.getElementById('riskModalSource').textContent = res.data.risk.riskSource === 'model' ? '评估来源：AI 异常检测模型' : '评估来源：规则引擎';
+                document.getElementById('riskModal').classList.add('show');
+            }
         }).catch(function(err) {
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
@@ -276,6 +332,9 @@
             document.getElementById('rowExpected').style.display = 'none';
             document.getElementById('rowActual').style.display = 'none';
         });
+    });
+    document.getElementById('riskModalClose').addEventListener('click', function() {
+        document.getElementById('riskModal').classList.remove('show');
     });
 </script>
 </body>

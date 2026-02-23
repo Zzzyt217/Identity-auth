@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员登录 - 基于区块链的企业智能身份认证管理系统</title>
+    <title th:text="${testUserLogin} ? '测试用户登录 - 基于区块链的企业智能身份认证管理系统' : '管理员登录 - 基于区块链的企业智能身份认证管理系统'">登录 - 基于区块链的企业智能身份认证管理系统</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -178,11 +178,14 @@
 <div class="container">
     <div class="login-card">
         <div class="card-header">
-            <h1><i class="fas fa-user-shield"></i> 管理员登录</h1>
-            <p>仅管理员可访问权限管理与审计日志</p>
+            <h1 th:if="${!testUserLogin}"><i class="fas fa-user-shield"></i> 管理员登录</h1>
+            <h1 th:if="${testUserLogin}"><i class="fas fa-user"></i> 测试用户登录</h1>
+            <p th:if="${!testUserLogin}">仅管理员可访问权限管理与审计日志</p>
+            <p th:if="${testUserLogin}">测试账号：user1 / user2 / user3，密码：123456</p>
         </div>
         <form id="loginForm">
             <input type="hidden" id="redirect" th:value="${redirect}" value="/">
+            <input type="hidden" id="testUserLogin" th:value="${testUserLogin}" value="false">
             <div class="form-group">
                 <label class="form-label">用户名</label>
                 <input type="text" class="form-control" id="username" placeholder="请输入用户名" required autocomplete="username">
@@ -196,7 +199,11 @@
             </button>
             <p id="errMsg" class="err-msg" style="display: none;"></p>
         </form>
-        <a href="/" class="btn btn-secondary" style="display: block; text-align: center;">
+        <p style="text-align: center; margin-top: 12px; font-size: 13px;">
+            <a th:if="${testUserLogin}" href="/login" style="color: var(--primary-color);">管理员登录</a>
+            <a th:if="${!testUserLogin}" href="/login/test" style="color: var(--primary-color);">测试用户登录</a>
+        </p>
+        <a href="/" class="btn btn-secondary" style="display: block; text-align: center; margin-top: 12px;">
             <i class="fas fa-arrow-left"></i> 返回首页
         </a>
     </div>
@@ -211,12 +218,14 @@
         var username = document.getElementById('username').value.trim();
         var password = document.getElementById('password').value;
         var redirect = document.getElementById('redirect').value || '/';
+        var isTestUserPage = document.getElementById('testUserLogin').value === 'true';
+        var apiUrl = isTestUserPage ? '/api/login/test' : '/api/login';
         var btn = document.getElementById('btnSubmit');
         var err = document.getElementById('errMsg');
         err.style.display = 'none';
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
-        axios.post('/api/login', { username: username, password: password }).then(function(res) {
+        axios.post(apiUrl, { username: username, password: password }).then(function(res) {
             if (res.data.success) {
                 window.location.href = redirect;
             } else {
