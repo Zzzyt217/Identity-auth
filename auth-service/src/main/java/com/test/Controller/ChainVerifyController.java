@@ -4,6 +4,7 @@ import com.test.Entity.AuditLog;
 import com.test.Entity.Identity;
 import com.test.Service.AuditLogService;
 import com.test.Service.IdentityService;
+import com.test.Service.DashboardStatsService;
 import com.test.blockchain.EvidenceStorageContract;
 import com.test.risk.BehaviorRecordService;
 import com.test.risk.AiRiskEngine;
@@ -43,6 +44,8 @@ public class ChainVerifyController {
     private AiRiskEngine aiRiskEngine;
     @Autowired
     private RiskEscalationService riskEscalationService;
+    @Autowired(required = false)
+    private DashboardStatsService dashboardStatsService;
 
     @Autowired(required = false)
     private Web3j web3j;
@@ -84,9 +87,11 @@ public class ChainVerifyController {
         String userId = session != null && session.getAttribute("user") != null
                 ? (String) session.getAttribute("user") : "anonymous";
         if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            if (dashboardStatsService != null) dashboardStatsService.incrementHighRiskCount();
             return riskEscalationService.createRefuseResponse();
         }
         behaviorRecordService.record(userId, BehaviorRecordService.ACTION_CHAIN_VERIFY, System.currentTimeMillis());
+        if (dashboardStatsService != null) dashboardStatsService.incrementVerifyCount();
         if (did.isEmpty()) {
             attachRisk(result, userId, session);
             result.put("status", "ERROR");
@@ -164,9 +169,11 @@ public class ChainVerifyController {
         String userId = session != null && session.getAttribute("user") != null
                 ? (String) session.getAttribute("user") : "anonymous";
         if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            if (dashboardStatsService != null) dashboardStatsService.incrementHighRiskCount();
             return riskEscalationService.createRefuseResponse();
         }
         behaviorRecordService.record(userId, BehaviorRecordService.ACTION_CHAIN_VERIFY, System.currentTimeMillis());
+        if (dashboardStatsService != null) dashboardStatsService.incrementVerifyCount();
         if (txHash.isEmpty()) {
             attachRisk(result, userId, session);
             result.put("status", "ERROR");
@@ -284,7 +291,7 @@ public class ChainVerifyController {
         return Identity.computeContentHash(identity);
     }
 
-    /** 在响应中附带当前用户的风险检查结果，并做中风险预警后操作次数累计（供升级为拒绝）。 */
+    /** 在响应中附带当前用户的风险检查结果，并做中风险预警后操作次数累计（供升级为拒绝）；中高风险时计入仪表盘统计。 */
     private void attachRisk(Map<String, Object> result, String userId, HttpSession session) {
         if (aiRiskEngine == null) return;
         try {
@@ -298,6 +305,9 @@ public class ChainVerifyController {
             result.put("risk", risk);
             if (riskEscalationService != null && session != null) {
                 riskEscalationService.applyAfterRequest(session, r);
+            }
+            if (dashboardStatsService != null && ("高".equals(r.getRiskLevel()) || "中".equals(r.getRiskLevel()))) {
+                dashboardStatsService.incrementHighRiskCount();
             }
         } catch (Exception ignored) { }
     }

@@ -31,7 +31,7 @@ public class AiRiskEngine {
     /** 身份查询权重（5 分钟内） */
     private static final double WEIGHT_QUERY_5M = 0.3;
 
-    /** 分数 >= 此值视为高风险 */
+    /** 分数 >= 此值视为中高风险 */
     private static final double THRESHOLD_HIGH = 80;
     /** 分数 >= 此值视为存在风险（中风险及以上），与“阈值 60”一致 */
     private static final double THRESHOLD_RISK = 60;

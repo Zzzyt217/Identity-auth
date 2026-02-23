@@ -6,6 +6,7 @@ import com.test.risk.BehaviorRecordService;
 import com.test.risk.AiRiskEngine;
 import com.test.risk.RiskResult;
 import com.test.risk.RiskEscalationService;
+import com.test.Service.DashboardStatsService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +33,8 @@ public class IdentityController {
     private AiRiskEngine aiRiskEngine;
     @Resource
     private RiskEscalationService riskEscalationService;
+    @Resource
+    private DashboardStatsService dashboardStatsService;
 
     /**
      * 注册：生成 DID 并入库，返回身份信息（含 id、did）
@@ -115,6 +118,7 @@ public class IdentityController {
         String userId = session != null && session.getAttribute("user") != null
                 ? (String) session.getAttribute("user") : "anonymous";
         if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
+            if (dashboardStatsService != null) dashboardStatsService.incrementHighRiskCount();
             return riskEscalationService.createRefuseResponse();
         }
         behaviorRecordService.record(userId, BehaviorRecordService.ACTION_IDENTITY_QUERY, System.currentTimeMillis());
@@ -161,6 +165,9 @@ public class IdentityController {
                 data.put("risk", risk);
                 if (riskEscalationService != null && session != null) {
                     riskEscalationService.applyAfterRequest(session, r);
+                }
+                if (dashboardStatsService != null && ("高".equals(r.getRiskLevel()) || "中".equals(r.getRiskLevel()))) {
+                    dashboardStatsService.incrementHighRiskCount();
                 }
             } catch (Exception ignored) { }
         }

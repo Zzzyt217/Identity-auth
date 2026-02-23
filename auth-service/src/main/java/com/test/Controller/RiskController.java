@@ -23,12 +23,12 @@ public class RiskController {
     @Resource
     private RiskEscalationService riskEscalationService;
 
-    /** 升级为高风险后的固定展示分数（与规则阈值 80 对应） */
+    /** 升级为中高风险后的固定展示分数（与规则阈值 80 对应） */
     private static final double ESCALATED_HIGH_SCORE = 80.0;
 
     /**
      * 获取当前用户的风险分析结果（从 Session 取用户，调用 AI 风险引擎）
-     * 若已因「中风险预警后仍频繁操作」被拒绝，则直接返回高风险及对应分数，保证风险分析页与拒绝状态一致。
+     * 若已因「中风险预警后仍频繁操作」被拒绝，则直接返回中高风险及对应分数，保证风险分析页与拒绝状态一致。
      * GET /api/risk/check
      */
     @GetMapping("/risk/check")

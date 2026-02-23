@@ -128,6 +128,18 @@
         }
         .btn-secondary:hover { background: var(--primary-color); color: white; }
         .empty-tip { color: var(--text-light); text-align: center; padding: 40px; font-size: 14px; }
+        .pagination { margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .pagination a:hover { background: var(--primary-color); color: white; }
+        .pagination span.current { background: var(--primary-color); color: white; pointer-events: none; }
+        .pagination span.disabled { opacity: 0.5; pointer-events: none; cursor: default; }
         .footer {
             text-align: center;
             padding: 20px;
@@ -172,6 +184,7 @@
                 </tbody>
             </table>
         </div>
+        <div id="paginationWrap" class="pagination" style="display: none;"></div>
         <a href="/" class="btn-secondary">
             <i class="fas fa-arrow-left"></i>
             返回首页
@@ -183,18 +196,27 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    var PAGE_SIZE = 6;
+    var fullList = [];
+    var currentPage = 1;
+    var totalPages = 1;
+
     function operationTypeLabel(type) {
         if (type === 'UPDATE_ROLE') return '权限修改';
         if (type === 'REVOKE_DID') return '注销DID';
         return type || '—';
     }
-    axios.get('/api/audit/list').then(function(res) {
+
+    function renderTable() {
         var tbody = document.getElementById('tableBody');
-        if (!res.data.success || !res.data.list || res.data.list.length === 0) {
+        var from = (currentPage - 1) * PAGE_SIZE;
+        var to = Math.min(from + PAGE_SIZE, fullList.length);
+        var pageList = fullList.slice(from, to);
+        if (pageList.length === 0) {
             tbody.innerHTML = '<tr><td colspan="7" class="empty-tip">暂无审计记录</td></tr>';
             return;
         }
-        tbody.innerHTML = res.data.list.map(function(item) {
+        tbody.innerHTML = pageList.map(function(item) {
             var opLabel = operationTypeLabel(item.operationType);
             var operatedAt = item.operatedAt ? item.operatedAt.replace('T', ' ').substring(0, 19) : '—';
             var chainHash = item.chainTxHash ? item.chainTxHash : '—';
@@ -207,8 +229,65 @@
                 '<td>' + operatedAt + '</td>' +
                 '<td class="hash-cell">' + chainHash + '</td></tr>';
         }).join('');
+    }
+
+    function renderPagination() {
+        var wrap = document.getElementById('paginationWrap');
+        if (totalPages <= 1) {
+            wrap.style.display = 'none';
+            return;
+        }
+        wrap.style.display = 'flex';
+        var html = '';
+        if (currentPage > 1) {
+            html += '<a href="javascript:void(0)" id="paginationPrev">上一页</a>';
+        } else {
+            html += '<span class="disabled">上一页</span>';
+        }
+        for (var p = 1; p <= totalPages; p++) {
+            if (p === currentPage) {
+                html += '<span class="current">' + p + '</span>';
+            } else {
+                html += '<a href="javascript:void(0)" class="page-num" data-page="' + p + '">' + p + '</a>';
+            }
+        }
+        if (currentPage < totalPages) {
+            html += '<a href="javascript:void(0)" id="paginationNext">下一页</a>';
+        } else {
+            html += '<span class="disabled">下一页</span>';
+        }
+        wrap.innerHTML = html;
+        var prev = document.getElementById('paginationPrev');
+        if (prev) prev.onclick = function() { currentPage--; renderTable(); renderPagination(); };
+        var next = document.getElementById('paginationNext');
+        if (next) next.onclick = function() { currentPage++; renderTable(); renderPagination(); };
+        wrap.querySelectorAll('.page-num').forEach(function(a) {
+            a.onclick = function() {
+                currentPage = parseInt(this.getAttribute('data-page'), 10);
+                renderTable();
+                renderPagination();
+            };
+        });
+    }
+
+    axios.get('/api/audit/list').then(function(res) {
+        if (!res.data.success || !res.data.list) {
+            fullList = [];
+        } else {
+            fullList = res.data.list;
+        }
+        var total = fullList.length;
+        totalPages = total === 0 ? 1 : Math.ceil(total / PAGE_SIZE);
+        currentPage = 1;
+        if (total === 0) {
+            document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" class="empty-tip">暂无审计记录</td></tr>';
+        } else {
+            renderTable();
+        }
+        renderPagination();
     }).catch(function() {
         document.getElementById('tableBody').innerHTML = '<tr><td colspan="7" class="empty-tip">加载失败，请刷新重试</td></tr>';
+        document.getElementById('paginationWrap').style.display = 'none';
     });
 </script>
 </body>

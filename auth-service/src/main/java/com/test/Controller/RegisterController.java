@@ -2,6 +2,8 @@ package com.test.Controller;
 
 import com.test.Entity.Identity;
 import com.test.Service.IdentityService;
+import com.test.Service.AuditLogService;
+import com.test.Service.DashboardStatsService;
 import com.test.risk.RiskEscalationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,14 +22,27 @@ public class RegisterController {
     @Resource
     private IdentityService identityService;
     @Resource
+    private AuditLogService auditLogService;
+    @Resource
+    private DashboardStatsService dashboardStatsService;
+    @Resource
     private RiskEscalationService riskEscalationService;
 
-    /** 首页：根据是否管理员/测试用户登录展示权限管理中心及登录区 */
+    /** 首页：根据是否管理员/测试用户登录展示权限管理中心及登录区，并同步仪表盘统计 */
     @GetMapping("/")
     public String index(Model model, HttpSession session) {
         model.addAttribute("isAdmin", session.getAttribute(SESSION_ADMIN) != null);
         model.addAttribute("currentUser", session.getAttribute("user")); // user1 / user2 / user3 或 null
         model.addAttribute("didCount", identityService.count());
+        long chainTxTotal = identityService.listAll().stream()
+                .filter(i -> i.getChainTxHash() != null && !i.getChainTxHash().trim().isEmpty())
+                .count();
+        chainTxTotal += auditLogService.listAll().stream()
+                .filter(l -> l.getChainTxHash() != null && !l.getChainTxHash().trim().isEmpty())
+                .count();
+        model.addAttribute("chainTxTotal", chainTxTotal);
+        model.addAttribute("todayVerifyCount", dashboardStatsService != null ? dashboardStatsService.getTodayVerifyCount() : 0);
+        model.addAttribute("highRiskCount", dashboardStatsService != null ? dashboardStatsService.getTodayHighRiskCount() : 0);
         return "index";
     }
 
