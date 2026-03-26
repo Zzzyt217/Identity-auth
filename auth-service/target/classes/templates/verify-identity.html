@@ -224,11 +224,17 @@
             <i class="fas fa-id-card"></i>
             身份验证
         </h1>
-        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">提供 DID，通过智能合约核验该身份凭证对应的链上存证 hash 是否与当前信息一致。</p>
+        <p style="color: var(--text-light); margin-bottom: 24px; font-size: 14px;">
+            支持 DID 或姓名（同名需二次选择），通过智能合约核验该身份凭证对应的链上存证 hash 是否与当前信息一致。
+        </p>
         <form id="verifyForm">
             <div class="form-group">
-                <label class="form-label">DID <span style="color: var(--danger-color);">*</span></label>
-                <input type="text" class="form-control" id="did" name="did" placeholder="如：did:blockdia:emp:1001" required>
+                <label class="form-label">DID <span class="optional">(可选)</span></label>
+                <input type="text" class="form-control" id="did" name="did" placeholder="如：did:blockdia:emp:1001">
+            </div>
+            <div class="form-group">
+                <label class="form-label">姓名 <span class="optional">(可选，同名需二次选择)</span></label>
+                <input type="text" class="form-control" id="name" name="name" placeholder="如：张三">
             </div>
             <button type="submit" class="btn btn-primary" id="btnSubmit">
                 <i class="fas fa-check-circle"></i>
@@ -248,6 +254,12 @@
             <div class="hash-row" id="rowActual">
                 <label>实际 hash（链上存证）</label>
                 <div class="hash-value" id="actualHash">—</div>
+            </div>
+            <div id="candidateList" style="display:none; margin-top: 18px;">
+                <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 10px;">
+                    候选身份（请选择对应 DID）
+                </div>
+                <div id="candidateButtons"></div>
             </div>
         </div>
     </div>
@@ -269,19 +281,27 @@
     document.getElementById('verifyForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var did = document.getElementById('did').value.trim();
-        if (!did) {
-            alert('请填写 DID');
+        var name = document.getElementById('name').value.trim();
+        if (!did && !name) {
+            alert('请填写 DID 或姓名');
             return;
         }
         var btn = document.getElementById('btnSubmit');
         btn.disabled = true;
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 验证中...';
         var resultCard = document.getElementById('resultCard');
-        var url = '/api/chain/verify/identity?did=' + encodeURIComponent(did);
+        var url;
+        if (did) {
+            url = '/api/chain/verify/identity?did=' + encodeURIComponent(did);
+        } else {
+            url = '/api/chain/verify/identity?name=' + encodeURIComponent(name);
+        }
         axios.get(url).then(function(res) {
             btn.disabled = false;
             btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
             resultCard.classList.add('show');
+            document.getElementById('candidateList').style.display = 'none';
+            document.getElementById('candidateButtons').innerHTML = '';
             if (res.data && res.data.riskBlocked) {
                 var level = (res.data.risk && res.data.risk.riskLevel) ? res.data.risk.riskLevel : '高';
                 var msg = (res.data.risk && res.data.risk.message) ? res.data.risk.message : '拒绝操作';
@@ -297,23 +317,113 @@
                 return;
             }
             var statusEl = document.getElementById('resultStatus');
-            document.getElementById('expectedHash').textContent = res.data.expectedHash != null ? res.data.expectedHash : '—';
-            document.getElementById('actualHash').textContent = res.data.actualHash != null ? res.data.actualHash : '—';
-            document.getElementById('rowExpected').style.display = 'block';
-            document.getElementById('rowActual').style.display = 'block';
-            statusEl.className = 'result-status';
-            if (res.data.status === 'PASS') {
-                statusEl.classList.add('pass');
-                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
-            } else if (res.data.status === 'NO_RECORD') {
-                statusEl.classList.add('no-record');
-                statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';
-            } else if (res.data.status === 'MISMATCH') {
-                statusEl.classList.add('fail');
-                statusEl.innerHTML = '<i class="fas fa-times-circle"></i> 链上检验不通过：该身份存在问题（链上存证与当前内容不一致）。';
+
+            // 同名候选：不立即展示 hash，而是先让用户选择 DID 继续验证
+            if (res.data && res.data.status === 'MULTIPLE_MATCHES') {
+                statusEl.className = 'result-status error';
+                statusEl.innerHTML = '<i class="fas fa-info-circle"></i> ' + (res.data.message || '检测到多个候选，请选择对应 DID。');
+                document.getElementById('rowExpected').style.display = 'none';
+                document.getElementById('rowActual').style.display = 'none';
+
+                var candidates = Array.isArray(res.data.candidates) ? res.data.candidates : [];
+                document.getElementById('candidateList').style.display = 'block';
+                var candidateButtons = document.getElementById('candidateButtons');
+                candidateButtons.innerHTML = '';
+
+                candidates.forEach(function(c) {
+                    var btnPick = document.createElement('button');
+                    btnPick.type = 'button';
+                    btnPick.className = 'btn btn-secondary';
+                    btnPick.style.marginRight = '10px';
+                    btnPick.style.marginBottom = '10px';
+                    var label = (c.name || '') + (c.employeeId ? '（' + c.employeeId + '）' : '');
+                    var dept = c.department ? (' - ' + c.department) : '';
+                    btnPick.textContent = '选择：' + label + dept;
+                    btnPick.addEventListener('click', function() {
+                        // 二次选择：按 DID 继续调用同一验证接口
+                        var did2 = c.did;
+                        if (!did2) return;
+                        btn.disabled = true;
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 验证中...';
+                        axios.get('/api/chain/verify/identity?did=' + encodeURIComponent(did2)).then(function(res2) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
+                            document.getElementById('candidateList').style.display = 'none';
+                            // 若触发风控拒绝：展示拒绝弹窗并隐藏 hash
+                            if (res2.data && res2.data.riskBlocked) {
+                                var level2b = (res2.data.risk && res2.data.risk.riskLevel) ? res2.data.risk.riskLevel : '高';
+                                var msg2b = (res2.data.risk && res2.data.risk.message) ? res2.data.risk.message : '拒绝操作';
+                                document.getElementById('riskModalLevel').textContent = '风险等级：' + level2b;
+                                document.getElementById('riskModalLevel').className = 'risk-level-badge high';
+                                document.getElementById('riskModalMessage').textContent = msg2b;
+                                document.getElementById('riskModalSource').textContent = '评估来源：规则引擎';
+                                document.getElementById('riskModal').classList.add('show');
+                                document.getElementById('resultStatus').className = 'result-status error';
+                                document.getElementById('resultStatus').innerHTML = '<i class="fas fa-ban"></i> 拒绝操作';
+                                document.getElementById('rowExpected').style.display = 'none';
+                                document.getElementById('rowActual').style.display = 'none';
+                                return;
+                            }
+
+                            document.getElementById('rowExpected').style.display = 'block';
+                            document.getElementById('rowActual').style.display = 'block';
+                            document.getElementById('expectedHash').textContent = res2.data.expectedHash != null ? res2.data.expectedHash : '—';
+                            document.getElementById('actualHash').textContent = res2.data.actualHash != null ? res2.data.actualHash : '—';
+
+                            statusEl.className = 'result-status';
+                            if (res2.data.status === 'PASS') {
+                                statusEl.classList.add('pass');
+                                statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
+                            } else if (res2.data.status === 'NO_RECORD') {
+                                statusEl.classList.add('no-record');
+                                statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';
+                            } else if (res2.data.status === 'MISMATCH') {
+                                statusEl.classList.add('fail');
+                                statusEl.innerHTML = '<i class="fas fa-times-circle"></i> 链上检验不通过：该身份存在问题（链上存证与当前内容不一致）。';
+                            } else {
+                                statusEl.classList.add('error');
+                                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (res2.data.message || '验证异常');
+                            }
+
+                            if (res2.data.risk && res2.data.risk.riskDetected) {
+                                var level2 = res2.data.risk.riskLevel || '高';
+                                var msg2 = res2.data.risk.message || '检测到短时间多次链上验证或身份查询，请确认是否为本人操作。';
+                                document.getElementById('riskModalLevel').textContent = '风险等级：' + level2;
+                                document.getElementById('riskModalLevel').className = 'risk-level-badge ' + (level2 === '高' ? 'high' : (level2 === '中' ? 'medium' : 'high'));
+                                document.getElementById('riskModalMessage').textContent = msg2;
+                                document.getElementById('riskModalSource').textContent = res2.data.risk.riskSource === 'model' ? '评估来源：AI 异常检测模型' : '评估来源：规则引擎';
+                                document.getElementById('riskModal').classList.add('show');
+                            }
+                        }).catch(function() {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-check-circle"></i> 开始验证';
+                            document.getElementById('resultStatus').className = 'result-status error';
+                            document.getElementById('resultStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> 验证异常';
+                            document.getElementById('rowExpected').style.display = 'none';
+                            document.getElementById('rowActual').style.display = 'none';
+                        });
+                    });
+                    candidateButtons.appendChild(btnPick);
+                });
             } else {
-                statusEl.classList.add('error');
-                statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (res.data.message || '验证异常');
+                document.getElementById('expectedHash').textContent = res.data.expectedHash != null ? res.data.expectedHash : '—';
+                document.getElementById('actualHash').textContent = res.data.actualHash != null ? res.data.actualHash : '—';
+                document.getElementById('rowExpected').style.display = 'block';
+                document.getElementById('rowActual').style.display = 'block';
+                statusEl.className = 'result-status';
+                if (res.data.status === 'PASS') {
+                    statusEl.classList.add('pass');
+                    statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
+                } else if (res.data.status === 'NO_RECORD') {
+                    statusEl.classList.add('no-record');
+                    statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';
+                } else if (res.data.status === 'MISMATCH') {
+                    statusEl.classList.add('fail');
+                    statusEl.innerHTML = '<i class="fas fa-times-circle"></i> 链上检验不通过：该身份存在问题（链上存证与当前内容不一致）。';
+                } else {
+                    statusEl.classList.add('error');
+                    statusEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> ' + (res.data.message || '验证异常');
+                }
             }
             if (res.data.risk && res.data.risk.riskDetected) {
                 var level = res.data.risk.riskLevel || '高';

@@ -162,6 +162,9 @@ public class IdentityController {
                 risk.put("score", r.getScore());
                 risk.put("message", r.getMessage());
                 risk.put("riskSource", r.getRiskSource());
+                if (r.getPosteriorProbability() != null) {
+                    risk.put("posteriorProbability", r.getPosteriorProbability());
+                }
                 data.put("risk", risk);
                 if (riskEscalationService != null && session != null) {
                     riskEscalationService.applyAfterRequest(session, r);

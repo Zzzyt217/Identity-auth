@@ -12,6 +12,12 @@ public class RiskResult {
     /** 评估来源：model=AI异常检测模型，rule=规则引擎 */
     private String riskSource;
 
+    /**
+     * 贝叶斯更新后的风险后验概率 P(Risk|Evidence)，范围 [0,1]；
+     * 匿名用户或未启用后验路径时为 null。
+     */
+    private Double posteriorProbability;
+
     public RiskResult() {
     }
 
@@ -20,11 +26,17 @@ public class RiskResult {
     }
 
     public RiskResult(boolean riskDetected, String riskLevel, double score, String message, String riskSource) {
+        this(riskDetected, riskLevel, score, message, riskSource, null);
+    }
+
+    public RiskResult(boolean riskDetected, String riskLevel, double score, String message, String riskSource,
+                      Double posteriorProbability) {
         this.riskDetected = riskDetected;
         this.riskLevel = riskLevel;
         this.score = score;
         this.message = message;
         this.riskSource = riskSource != null ? riskSource : "rule";
+        this.posteriorProbability = posteriorProbability;
     }
 
     public boolean isRiskDetected() {
@@ -65,5 +77,13 @@ public class RiskResult {
 
     public void setRiskSource(String riskSource) {
         this.riskSource = riskSource;
+    }
+
+    public Double getPosteriorProbability() {
+        return posteriorProbability;
+    }
+
+    public void setPosteriorProbability(Double posteriorProbability) {
+        this.posteriorProbability = posteriorProbability;
     }
 }

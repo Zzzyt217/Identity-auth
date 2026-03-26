@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,14 +78,19 @@ public class ChainVerifyController {
 
     /**
      * 身份验证：根据 DID 核验当前凭证内容与链上存证 hash 是否一致。
-     * GET /api/chain/verify/identity?did=xxx&txHash=yyy（txHash 选填，仅用于前端展示或扩展）
+     * 支持两种定位方式：
+     *  - 按 DID：GET /api/chain/verify/identity?did=xxx
+     *  - 按姓名：GET /api/chain/verify/identity?name=xxx（若同名存在多个候选将返回 candidates 供二次选择）
+     * txHash 选填：GET /api/chain/verify/identity?did=xxx&txHash=yyy（txHash 目前仅用于兼容/扩展）
      */
     @GetMapping("/verify/identity")
-    public Map<String, Object> verifyIdentity(@RequestParam String did,
+    public Map<String, Object> verifyIdentity(@RequestParam(required = false) String did,
+                                              @RequestParam(required = false) String name,
                                               @RequestParam(required = false) String txHash,
                                               HttpSession session) {
         Map<String, Object> result = new HashMap<>();
         did = did != null ? did.trim() : "";
+        name = name != null ? name.trim() : "";
         String userId = session != null && session.getAttribute("user") != null
                 ? (String) session.getAttribute("user") : "anonymous";
         if (riskEscalationService != null && riskEscalationService.isBlocked(session)) {
@@ -92,23 +99,73 @@ public class ChainVerifyController {
         }
         behaviorRecordService.record(userId, BehaviorRecordService.ACTION_CHAIN_VERIFY, System.currentTimeMillis());
         if (dashboardStatsService != null) dashboardStatsService.incrementVerifyCount();
-        if (did.isEmpty()) {
+        if (did.isEmpty() && name.isEmpty()) {
             attachRisk(result, userId, session);
             result.put("status", "ERROR");
-            result.put("message", "请提供 DID");
+            result.put("message", "请提供 DID 或姓名");
             result.put("expectedHash", null);
             result.put("actualHash", null);
             return result;
         }
-        Identity identity = identityService.getByDid(did);
-        if (identity == null) {
-            attachRisk(result, userId, session);
-            result.put("status", "NO_RECORD");
-            result.put("message", "该身份不存在或链上无此 DID 记录");
-            result.put("expectedHash", null);
-            result.put("actualHash", null);
-            return result;
+
+        // 1) 先根据定位条件拿到唯一身份（或返回候选列表）
+        Identity identity = null;
+        String identityDid = null;
+        if (!did.isEmpty()) {
+            identity = identityService.getByDid(did);
+            if (identity == null) {
+                attachRisk(result, userId, session);
+                result.put("status", "NO_RECORD");
+                result.put("message", "该身份不存在或链上无此 DID 记录");
+                result.put("expectedHash", null);
+                result.put("actualHash", null);
+                return result;
+            }
+            identityDid = identity.getDid();
+        } else {
+            List<Identity> all = identityService.listAll();
+            List<Identity> candidates = new ArrayList<>();
+            for (Identity i : all) {
+                if (i == null || i.getName() == null) continue;
+                if (i.getName().trim().equalsIgnoreCase(name)) {
+                    candidates.add(i);
+                }
+            }
+            if (candidates.isEmpty()) {
+                attachRisk(result, userId, session);
+                result.put("status", "NO_RECORD");
+                result.put("message", "未查到该姓名对应的身份记录");
+                result.put("expectedHash", null);
+                result.put("actualHash", null);
+                return result;
+            }
+            if (candidates.size() > 1) {
+                // 同名存在多个候选：返回 candidates 给前端二次选择
+                attachRisk(result, userId, session);
+                result.put("status", "MULTIPLE_MATCHES");
+                result.put("message", "检测到多个同名身份，请选择对应 DID 进行验证");
+                List<Map<String, Object>> candidateList = new ArrayList<>();
+                for (Identity c : candidates) {
+                    Map<String, Object> m = new HashMap<>();
+                    m.put("id", c.getId());
+                    m.put("did", c.getDid());
+                    m.put("employeeId", c.getEmployeeId());
+                    m.put("name", c.getName());
+                    m.put("department", c.getDepartment());
+                    m.put("position", c.getPosition());
+                    m.put("role", c.getRole());
+                    candidateList.add(m);
+                }
+                result.put("candidates", candidateList);
+                result.put("expectedHash", null);
+                result.put("actualHash", null);
+                return result;
+            }
+            identity = candidates.get(0);
+            identityDid = identity.getDid();
         }
+
+        // 2) 单一身份：继续链上验证流程（链服务需就绪）
         if (web3j == null || credentials == null || gasProvider == null
                 || contractAddress == null || contractAddress.trim().isEmpty()) {
             attachRisk(result, userId, session);
@@ -118,10 +175,11 @@ public class ChainVerifyController {
             result.put("actualHash", null);
             return result;
         }
+
         try {
             String expectedHash = computeIdentityHash(identity);
             String actualHash = EvidenceStorageContract.get(
-                    web3j, credentials, gasProvider, contractAddress.trim(), did);
+                    web3j, credentials, gasProvider, contractAddress.trim(), identityDid);
             if (actualHash == null) {
                 actualHash = "";
             }
@@ -302,6 +360,9 @@ public class ChainVerifyController {
             risk.put("score", r.getScore());
             risk.put("message", r.getMessage());
             risk.put("riskSource", r.getRiskSource());
+            if (r.getPosteriorProbability() != null) {
+                risk.put("posteriorProbability", r.getPosteriorProbability());
+            }
             result.put("risk", risk);
             if (riskEscalationService != null && session != null) {
                 riskEscalationService.applyAfterRequest(session, r);

@@ -38,15 +38,16 @@ public class RiskEscalationService {
     }
 
     /**
-     * 本请求为一次查询或认证操作后调用：若本次风险为「中」则标记已预警；
-     * 若此前已预警则本请求计为「预警后又一次操作」，累加次数，达到 {@link #THRESHOLD_OPS_TO_BLOCK} 则置为拒绝。
+     * 本请求为一次查询或认证操作后调用：
+     * - 若本次风险为「中/高」则标记已预警（兼容贝叶斯后可能直接评为高风险的场景）；
+     * - 若此前已预警则本请求计为「预警后又一次操作」，累加次数，达到阈值后置为拒绝。
      */
     public void applyAfterRequest(HttpSession session, RiskResult riskResult) {
         if (session == null || riskResult == null) return;
         if (isBlocked(session)) return;
 
         boolean wasWarned = Boolean.TRUE.equals(session.getAttribute(SESSION_RISK_WARNED_MEDIUM));
-        if ("中".equals(riskResult.getRiskLevel())) {
+        if ("中".equals(riskResult.getRiskLevel()) || "高".equals(riskResult.getRiskLevel())) {
             session.setAttribute(SESSION_RISK_WARNED_MEDIUM, true);
         }
         if (wasWarned) {
