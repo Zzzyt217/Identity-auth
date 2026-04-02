@@ -219,7 +219,7 @@ public class AiRiskEngine {
         }
         return clamp(p, 0.08, 0.92);
     }
-
+    /** 贝叶斯公式：P(Risk|E) = (P(E|Risk) * P(Risk)) / P(E) */
     private static double bayesPosterior(double pEGivenR, double pEGivenNotR, double prior) {
         double pR = clamp(prior, 0.0, 1.0);
         double pNotR = 1.0 - pR;

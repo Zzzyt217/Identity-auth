@@ -479,6 +479,154 @@
         .blockchain-link i {
             color: var(--accent-color);
         }
+
+        .empty-backup {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-light);
+        }
+
+        /* 备份模块样式 - 统一风格 */
+        .backup-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 500;
+            z-index: 9999;
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .backup-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .backup-toast.success {
+            background: rgba(0, 184, 148, 0.95);
+            color: white;
+        }
+
+        .backup-toast.error {
+            background: rgba(214, 48, 49, 0.95);
+            color: white;
+        }
+
+        .backup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .backup-modal.show {
+            display: flex;
+        }
+
+        .backup-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .backup-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .backup-modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .backup-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .backup-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .backup-table th, .backup-table td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .backup-table th {
+            color: var(--primary-color);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .backup-table td {
+            font-size: 13px;
+        }
+
+        .backup-table .hash-cell {
+            font-family: monospace;
+            font-size: 11px;
+            word-break: break-all;
+            max-width: 180px;
+        }
+
+        .btn-download {
+            padding: 6px 14px;
+            background: rgba(42, 63, 142, 0.1);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .btn-download:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-delete {
+            padding: 6px 14px;
+            background: rgba(214, 48, 49, 0.1);
+            color: var(--danger-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .empty-backup {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
     </style>
 </head>
 <body>
@@ -592,6 +740,21 @@
             </div>
         </div>
 
+        <!-- 数据备份管理模块 (SYS5)：仅管理员登录后展示 -->
+        <div class="card" th:if="${isAdmin}" id="backupModule">
+            <i class="fas fa-database card-icon"></i>
+            <h2><i class="fas fa-database"></i> 数据备份管理</h2>
+            <p>数据库自动定时备份与手动备份，支持备份记录查询与下载，确保数据安全。</p>
+            <div class="card-actions">
+                <button class="card-action" id="btnManualBackup" onclick="doManualBackup()">
+                    <i class="fas fa-download"></i> 立即备份
+                </button>
+                <button class="card-action secondary" onclick="showBackupList()">
+                    <i class="fas fa-list"></i> 查看记录
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <div class="footer">
@@ -600,22 +763,124 @@
     </div>
 </div>
 
+<!-- 备份列表模态框 -->
+<div class="backup-modal" id="backupModal">
+    <div class="backup-modal-content">
+        <div class="backup-modal-header">
+            <div class="backup-modal-title"><i class="fas fa-database"></i> 备份记录列表</div>
+            <button class="backup-modal-close" onclick="closeBackupModal()">&times;</button>
+        </div>
+        <div id="backupModalBody">
+            <div class="empty-backup"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast 提示 -->
+<div class="backup-toast" id="backupToast"></div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-    // 添加卡片悬停效果
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.boxShadow = '0 20px 40px rgba(108, 92, 231, 0.15)';
-        });
+    // 备份功能
+    function showToast(message, type) {
+        var toast = document.getElementById('backupToast');
+        toast.textContent = message;
+        toast.className = 'backup-toast show ' + type;
+        setTimeout(function() {
+            toast.className = 'backup-toast';
+        }, 3000);
+    }
 
-        card.addEventListener('mouseleave', function() {
-            this.style.boxShadow = 'var(--box-shadow)';
+    function doManualBackup() {
+        var btn = document.getElementById('btnManualBackup');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 备份中...';
+
+        axios.post('/api/backup/backup').then(function(r) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-download"></i> 立即备份';
+
+            if (r.data && r.data.success) {
+                showToast('备份成功！', 'success');
+            } else {
+                showToast('备份失败: ' + (r.data ? r.data.message : '未知错误'), 'error');
+            }
+        }).catch(function(err) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-download"></i> 立即备份';
+            showToast('备份请求失败', 'error');
         });
+    }
+
+    function showBackupList() {
+        var modal = document.getElementById('backupModal');
+        modal.classList.add('show');
+
+        var body = document.getElementById('backupModalBody');
+        body.innerHTML = '<div class="empty-backup"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+
+        axios.get('/api/backup/list').then(function(r) {
+            if (r.data && r.data.success && r.data.data) {
+                var list = r.data.data;
+                if (list.length === 0) {
+                    body.innerHTML = '<div class="empty-backup"><i class="fas fa-inbox"></i> 暂无备份记录</div>';
+                } else {
+                    body.innerHTML = '<table class="backup-table"><thead><tr>' +
+                        '<th>备份时间</th><th>文件大小</th><th>状态</th><th>耗时</th><th>操作</th></tr></thead><tbody>' +
+                        list.map(function(item) {
+                            var time = item.backupTime ? item.backupTime.replace('T', ' ').substring(0, 19) : '—';
+                            var size = item.fileSize ? (item.fileSize / 1024).toFixed(1) + ' KB' : '—';
+                            var status = item.status === 'SUCCESS' ? '<span style="color:#00b894;font-weight:500;">成功</span>' : '<span style="color:#d63031;font-weight:500;">失败</span>';
+                            var duration = item.durationSeconds ? item.durationSeconds + '秒' : '—';
+                            return '<tr>' +
+                                '<td>' + time + '</td>' +
+                                '<td>' + size + '</td>' +
+                                '<td>' + status + '</td>' +
+                                '<td>' + duration + '</td>' +
+                                '<td>' +
+                                (item.status === 'SUCCESS' ? '<button class="btn-download" onclick="downloadBackup(' + item.id + ')"><i class="fas fa-download"></i> 下载</button>' : '') +
+                                '<button class="btn-delete" onclick="deleteBackup(' + item.id + ')"><i class="fas fa-trash"></i> 删除</button></td></tr>';
+                        }).join('') + '</tbody></table>';
+                }
+            }
+        }).catch(function() {
+            body.innerHTML = '<div class="empty-backup"><i class="fas fa-exclamation-triangle"></i> 加载失败</div>';
+        });
+    }
+
+    function closeBackupModal() {
+        document.getElementById('backupModal').classList.remove('show');
+    }
+
+    function downloadBackup(id) {
+        window.location.href = '/api/backup/download/' + id;
+    }
+
+    function deleteBackup(id) {
+        if (!confirm('确定要删除这条备份记录吗？')) return;
+        axios.delete('/api/backup/' + id).then(function(r) {
+            if (r.data && r.data.success) {
+                showToast('删除成功', 'success');
+                showBackupList();
+            } else {
+                showToast('删除失败', 'error');
+            }
+        }).catch(function() {
+            showToast('删除请求失败', 'error');
+        });
+    }
+
+    // 点击模态框外部关闭
+    document.getElementById('backupModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeBackupModal();
+        }
     });
 
-    // 拉取链上区块高度并更新首页展示
+    // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
+        // 拉取链上区块高度
         var el = document.getElementById('chain-block-height');
         if (el) {
             axios.get('/api/chain/block-number').then(function(r) {
@@ -624,6 +889,16 @@
                 }
             }).catch(function() {});
         }
+    });
+
+    // 添加卡片悬停效果
+    document.querySelectorAll('.card').forEach(function(card) {
+        card.addEventListener('mouseenter', function() {
+            this.style.boxShadow = '0 20px 40px rgba(108, 92, 231, 0.15)';
+        });
+        card.addEventListener('mouseleave', function() {
+            this.style.boxShadow = 'var(--box-shadow)';
+        });
     });
 </script>
 </body>

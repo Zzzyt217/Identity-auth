@@ -2,6 +2,7 @@ package com.test.blockchain;
 
 import org.fisco.bcos.web3j.abi.datatypes.Type;
 import org.fisco.bcos.web3j.abi.datatypes.Utf8String;
+import org.fisco.bcos.web3j.abi.datatypes.generated.Uint256;
 import org.fisco.bcos.web3j.crypto.Credentials;
 import org.fisco.bcos.web3j.protocol.exceptions.TransactionException;
 import org.fisco.bcos.web3j.protocol.Web3j;
@@ -47,6 +48,68 @@ public final class EvidenceStorageContract {
         EvidenceStorageWrapper contract = EvidenceStorageWrapper.load(contractAddress, web3j, credentials, gasProvider);
         Type result = contract.executeCallSingleValueReturn(function);
         return result == null ? "" : result.getValue().toString();
+    }
+
+    /**
+     * 调用 exists(key)，检查存证是否存在。
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static boolean exists(Web3j web3j, Credentials credentials,
+                                 ContractGasProvider gasProvider, String contractAddress,
+                                 String key) throws Exception {
+        org.fisco.bcos.web3j.abi.datatypes.Function function = new org.fisco.bcos.web3j.abi.datatypes.Function(
+                "exists",
+                Collections.singletonList(new Utf8String(key)),
+                Collections.singletonList(org.fisco.bcos.web3j.abi.TypeReference.create(org.fisco.bcos.web3j.abi.datatypes.Bool.class)));
+        EvidenceStorageWrapper contract = EvidenceStorageWrapper.load(contractAddress, web3j, credentials, gasProvider);
+        Type result = contract.executeCallSingleValueReturn(function);
+        if (result == null) return false;
+        Object value = result.getValue();
+        if (value instanceof Boolean) return (Boolean) value;
+        if (value instanceof org.fisco.bcos.web3j.abi.datatypes.Bool) {
+            return ((org.fisco.bcos.web3j.abi.datatypes.Bool) value).getValue();
+        }
+        return false;
+    }
+
+    /**
+     * 调用 getTotalRecords()，获取总存证数。
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static java.math.BigInteger getTotalRecords(Web3j web3j, Credentials credentials,
+                                                       ContractGasProvider gasProvider, String contractAddress) throws Exception {
+        org.fisco.bcos.web3j.abi.datatypes.Function function = new org.fisco.bcos.web3j.abi.datatypes.Function(
+                "getTotalRecords",
+                Collections.emptyList(),
+                Collections.singletonList(org.fisco.bcos.web3j.abi.TypeReference.create(Uint256.class)));
+        EvidenceStorageWrapper contract = EvidenceStorageWrapper.load(contractAddress, web3j, credentials, gasProvider);
+        Type result = contract.executeCallSingleValueReturn(function);
+        if (result == null) return java.math.BigInteger.ZERO;
+        Object value = result.getValue();
+        if (value instanceof java.math.BigInteger) return (java.math.BigInteger) value;
+        if (value instanceof Uint256) return ((Uint256) value).getValue();
+        return java.math.BigInteger.ZERO;
+    }
+
+    /**
+     * 调用 getTimestamp(key)，获取存证时间戳。
+     * @return 时间戳（秒），未找到返回0
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static java.math.BigInteger getTimestamp(Web3j web3j, Credentials credentials,
+                                                   ContractGasProvider gasProvider, String contractAddress,
+                                                   String key) throws Exception {
+        org.fisco.bcos.web3j.abi.datatypes.Function function = new org.fisco.bcos.web3j.abi.datatypes.Function(
+                "getTimestamp",
+                Collections.singletonList(new Utf8String(key)),
+                Collections.singletonList(org.fisco.bcos.web3j.abi.TypeReference.create(Uint256.class)));
+        EvidenceStorageWrapper contract = EvidenceStorageWrapper.load(contractAddress, web3j, credentials, gasProvider);
+        Type result = contract.executeCallSingleValueReturn(function);
+        if (result == null) return java.math.BigInteger.ZERO;
+        Object value = result.getValue();
+        if (value instanceof java.math.BigInteger) return (java.math.BigInteger) value;
+        if (value instanceof Uint256) return ((Uint256) value).getValue();
+        return java.math.BigInteger.ZERO;
     }
 
     /**

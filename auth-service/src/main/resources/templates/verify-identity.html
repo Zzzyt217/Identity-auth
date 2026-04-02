@@ -148,6 +148,12 @@
             margin-left: 10px;
         }
         .btn-secondary:hover { background: var(--primary-color); color: white; }
+        .btn-export {
+            background: linear-gradient(135deg, var(--success-color), #00a884);
+            color: white;
+            margin-top: 16px;
+        }
+        .btn-export:hover { transform: translateY(-2px); }
         #resultCard {
             display: none;
             margin-top: 28px;
@@ -255,6 +261,10 @@
                 <label>实际 hash（链上存证）</label>
                 <div class="hash-value" id="actualHash">—</div>
             </div>
+            <button type="button" class="btn btn-primary" id="btnExport" style="margin-top: 16px; display: none;" onclick="exportReport()">
+                <i class="fas fa-file-export"></i>
+                导出验证报告
+            </button>
             <div id="candidateList" style="display:none; margin-top: 18px;">
                 <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 10px;">
                     候选身份（请选择对应 DID）
@@ -278,6 +288,16 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
+    var currentDid = null;
+
+    function exportReport() {
+        if (!currentDid) {
+            alert('请先完成一次验证');
+            return;
+        }
+        window.location.href = '/api/chain/report/export?did=' + encodeURIComponent(currentDid);
+    }
+
     document.getElementById('verifyForm').addEventListener('submit', function(e) {
         e.preventDefault();
         var did = document.getElementById('did').value.trim();
@@ -374,6 +394,8 @@
                             if (res2.data.status === 'PASS') {
                                 statusEl.classList.add('pass');
                                 statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
+                                currentDid = did2;
+                                document.getElementById('btnExport').style.display = 'inline-flex';
                             } else if (res2.data.status === 'NO_RECORD') {
                                 statusEl.classList.add('no-record');
                                 statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';
@@ -414,6 +436,8 @@
                 if (res.data.status === 'PASS') {
                     statusEl.classList.add('pass');
                     statusEl.innerHTML = '<i class="fas fa-check-circle"></i> 链上核验通过：当前凭证内容与链上存证一致，未被篡改。';
+                    currentDid = did;
+                    document.getElementById('btnExport').style.display = 'inline-flex';
                 } else if (res.data.status === 'NO_RECORD') {
                     statusEl.classList.add('no-record');
                     statusEl.innerHTML = '<i class="fas fa-info-circle"></i> 链上无存证：该身份尚未上链或链上无此 DID 记录。';

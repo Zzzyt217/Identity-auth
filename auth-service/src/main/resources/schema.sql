@@ -32,3 +32,20 @@ CREATE TABLE IF NOT EXISTS `audit_log` (
   KEY `idx_operated_at` (`operated_at`),
   KEY `idx_operation_type` (`operation_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='审计日志表';
+
+-- 备份记录表
+CREATE TABLE IF NOT EXISTS `backup_record` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `backup_type` varchar(20) NOT NULL DEFAULT 'FULL' COMMENT '备份类型：FULL-完整备份',
+  `file_path` varchar(512) DEFAULT NULL COMMENT '备份文件路径',
+  `file_size` bigint DEFAULT NULL COMMENT '备份文件大小（字节）',
+  `backup_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '备份时间',
+  `status` varchar(20) NOT NULL COMMENT '备份状态：SUCCESS-成功，FAILED-失败',
+  `duration_seconds` int DEFAULT NULL COMMENT '备份耗时（秒）',
+  `error_message` varchar(1024) DEFAULT NULL COMMENT '错误信息（备份失败时记录）',
+  `operator` varchar(50) DEFAULT NULL COMMENT '操作人',
+  `remark` varchar(512) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`),
+  KEY `idx_backup_time` (`backup_time`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='数据库备份记录表';
